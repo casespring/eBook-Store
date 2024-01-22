@@ -17,7 +17,7 @@ class Book(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=True, nullable=False)
     author = db.Column(db.String(100))
-    isbn = db.Column(db.String, unique=True, nullable=False)
+    # isbn = db.Column(db.String, unique=True)
     page_count = db.Column(db.Integer)
     summary = db.Column(db.Text)
     detail = db.Column(db.Text)
