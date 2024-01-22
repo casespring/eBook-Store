@@ -4,6 +4,16 @@
             "title" : "Wizard of Oz",
             "author" : "Jason James",
             "isbn" : 11111
+        },
+        {
+            "title" : "Alice in Wonderland",
+            "author" : "Lewis Carroll",
+            "isbn" : 11112
+        },
+        {
+            "title" : "Alice through the Looking Glass",
+            "author" : "Lewis Carroll",
+            "isbn" : 11113
         }
     ],
     "book_review": [
@@ -18,6 +28,16 @@
             "email" : "jjj@jmail.com",
             "name" : "James Johnson",
             "password" : "yyyyy"
+        },
+        {
+            "email" : "Anderson@jmail.com",
+            "name" : "John Johnson",
+            "password" : "ejjmgfeny"
+        },
+        {
+            "email" : "Harrietj@jmail.com",
+            "name" : "Mr. Amazon",
+            "password" : "yijknk"
         }
     ], 
     "order": [

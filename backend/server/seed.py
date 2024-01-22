@@ -1,5 +1,5 @@
 from app import app
-from models import db, Book, BookReview, User, Order
+from models import db, Book, BookReview, User, Order, Category
 import json
 from datetime import datetime
 
