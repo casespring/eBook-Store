@@ -20,5 +20,19 @@ db.init_app(app)
 def index():
     return '<h1>Welcome to the eBook Store</h1>'
 
+@app.route('/books')
+def get_book():
+    pass
+
+@app.route('/books/<init:id>')
+def get_books_by_id(id):
+    pass
+
+@app.route('/user')
+def get_user():
+    pass
+
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
