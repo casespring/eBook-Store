@@ -31,15 +31,15 @@ class Book(db.Model, SerializerMixin):
 
     category = db.relationship("Category", back_populates="book")
 
-    like_table = db.relationship("Like", back_populates="book_table", cascade="all, delete-orphan")
-    cart_table = db.relationship("Cart", back_populates="book_table", cascade="all, delete-orphan")
+    likes = db.relationship("Like", back_populates="book", cascade="all, delete-orphan")
+    cart_list = db.relationship("Cart", back_populates="book", cascade="all, delete-orphan")
+    book_review = db.relationship("BookReview", back_populates="book", cascade="all, delete-orphan")
+    order_details = db.relationship("OrderDetail", back_populates="book")
 
-    serialize_rules = ["-like_table.book", "-cart_table.book"]
+    serialize_rules = ["-likes.book", "-cart_list.book"]
 
     def __repr__(self):
-        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, 
-            {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image_file_path}, {self.category_id}>"
-
+        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image_file_path}, {self.category_id}>"
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'user_table'
@@ -51,10 +51,11 @@ class User(db.Model, SerializerMixin):
     salt = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
-    like_table = db.relationship("Like", back_populates="user_table", cascade="all, delete-orphan")
-    cart_table = db.relationship("Cart", back_populates="user_table", cascade="all, delete-orphan")
+    likes = db.relationship("Like", back_populates="user", cascade="all, delete-orphan")
+    cart_list = db.relationship("Cart", back_populates="user", cascade="all, delete-orphan")
+    orders = db.relationship("Order", back_populates="user", cascade="all, delete-orphan")
 
-    serialize_rules = ["-like_table.user", "-cart_table.user"]
+    serialize_rules = ["-likes.user", "-cart_list.user"]
 
     def __repr__(self):
         return f"<User {self.id}: {self.email}, {self.name}, {self.password}, {self.salt}, {self.created_at}>"
@@ -66,13 +67,14 @@ class Like(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('user_table.id'), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'), primary_key=True)
 
-    user = db.relationship("User", back_populates="like_table")
-    book = db.relationship("Book", back_populates="like_table")
+    user = db.relationship("User", back_populates="likes")
+    book = db.relationship("Book", back_populates="likes")
 
-    serialize_rules = ["-user.like_table", "-book.like_table"]
+    serialize_rules = ["-user.likes", "-book.likes"]
 
     def __repr__(self):
-        return f"< Like User {self.id}: {self.user_id}, Book:{self.book_id}>"
+        return f"<Like User {self.id}: {self.user_id}, Book:{self.book_id}>"
+
     
 class Cart(db.Model, SerializerMixin):
     __tablename__ = 'cart_table'
@@ -82,8 +84,8 @@ class Cart(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('user_table.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'))
 
-    user = db.relationship("User", back_populates="cart_table")
-    book = db.relationship("Book", back_populates="cart_table")
+    user = db.relationship("User", back_populates="cart_list")
+    book = db.relationship("Book", back_populates="cart_list")
 
     serialize_rules = ["-user.cart_table", "-book.cart_table"]
 
@@ -99,7 +101,7 @@ class BookReview(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'))
 
-    book = db.relationship("Book", back_populates="book_review_table")
+    book = db.relationship("Book", back_populates="book_review")
 
     def __repr__(self):
         return f"<Book Review {self.id}: {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
@@ -118,6 +120,8 @@ class Category(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
 
+    book = db.relationship("Book", back_populates="category")
+
     def __repr__(self):
         return f"<Category {self.id}: {self.name}>"
 
@@ -130,8 +134,9 @@ class Order(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('user_table.id'))
     delivery_id = db.Column(db.Integer, db.ForeignKey('delivery_table.id'))
 
-    user = db.relationship("User", back_populates="order_table")
-    delivery = db.relationship("Delivery", back_populates="order_table")
+    user = db.relationship("User", back_populates="orders")
+    delivery = db.relationship("Delivery", back_populates="orders")
+    order_details = db.relationship("OrderDetail", back_populates="orders")
 
     def __repr__(self):
         return f"<Order {self.id}: {self.total_price}, {self.ordered_at}, {self.user_id}, {self.delivery_id}>"
@@ -144,6 +149,7 @@ class Delivery(db.Model, SerializerMixin):
     recipient = db.Column(db.String)
     contact = db.Column(db.String)
 
+    orders = db.relationship("Order", back_populates="delivery", cascade="all, delete-orphan")
     def __repr__(self):
         return f"<Delivery {self.id}: {self.address}, {self.recipient}, {self.contact}>"
 
@@ -155,8 +161,10 @@ class OrderDetail(db.Model, SerializerMixin):
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'), primary_key=True)
     quantity = db.Column(db.Integer)
 
-    order = db.relationship("Order", back_populates="order_detail_table")
-    book = db.relationship("Book", back_populates="order_detail_table")
+    orders = db.relationship("Order", back_populates="order_details")
+    book = db.relationship("Book", back_populates="order_details")
+
+    
 
     def __repr__(self):
         return f"<Order Detail {self.id}: {self.order_id}, {self.book_id}, {self.quantity}>"
