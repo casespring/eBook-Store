@@ -17,12 +17,12 @@ db.init_app(app)
 
 
 @app.route('/')
-def index():
-    return '<h1>Welcome to the eBook Store</h1>'
+def home():
+    return '<h1>Welcome to the eBook Store Database</h1>'
 
 @app.route('/books')
-def get_book():
-    pass
+def get_books():
+    
 
 @app.route('/books/<init:id>')
 def get_books_by_id(id):
