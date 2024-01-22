@@ -1,0 +1,27 @@
+{
+    "books": [
+        {
+            "title" : "Wizard of Oz",
+            "author" : "Jason James"
+        }
+    ],
+    "book_review": [
+        {
+            "reviewer" : "Jason James",
+            "comment" : "Love the book",
+            "created_at" : "1/22/2024"    
+        }
+    ],
+    "user": [
+        {
+            "email" : "jjj@jmail.com",
+            "name" : "James Johnson",
+            "password" : "yyyyy"
+        }
+    ], 
+    "order": [
+        {
+            "total_price" : 400
+        }
+    ]
+}
