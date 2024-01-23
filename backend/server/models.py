@@ -32,7 +32,7 @@ class Book(db.Model, SerializerMixin):
     detail = db.Column(db.Text)
     table_of_contents = db.Column(db.Text)
     price = db.Column(db.Integer)
-    published_date = db.Column(db.Date)
+    published_date = db.Column(db.Date, nullable=True)
     book_image = db.Column(db.String)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category_table.id'))
