@@ -3,6 +3,7 @@ import App from "./App.jsx"
 import Profile from "./components/Profile"
 import Cart from "./components/Cart"
 import Home from "./components/Home"
+import BookDetails from "./components/BookDetails"
 
 const routes = [
     {
@@ -11,7 +12,7 @@ const routes = [
         errorElement: <h1>Something went wrong!</h1>,
         children: [
             {
-                path: "/home",
+                path: "/",
                 element: <Home />,
                 errorElement: <h1>Something went wrong!</h1>,
             },
@@ -24,6 +25,10 @@ const routes = [
                 path: "/cart",
                 element: <Cart />,
                 errorElement: <h1>Something went wrong!</h1>
+            },
+            {
+                path: "/book/:id",
+                element: <BookDetails />
             }
         ]
 }

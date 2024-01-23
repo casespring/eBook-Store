@@ -8,11 +8,9 @@ function NavBar() {
     return (
         // Navbar
         <nav className="navbar">
-            <NavLink to="/home" >
-                <div className="logo">
-                    <img src = "https://img.freepik.com/premium-vector/eagle-wing-logo-illustration-template_560456-25.jpg"></img>
-                </div>
-            </NavLink>
+            <a href="/" >
+                <h1 className="logo">BookStore</h1>
+            </a>
 
             {/* searchbar */}
             <div className="search">
@@ -22,15 +20,21 @@ function NavBar() {
             </div>
 
             {/* profile and cart */}
-
-            <div className="profilecart">
-                <NavLink to="/profile" >
+            
+            <ul className="profilecart">
+                <li>
+                {/* <NavLink to="/profile" > */}
+                <a href="/profile">
                     <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img>
-                </NavLink>
-            </div> 
-                <NavLink to="/cart">
+                </a>
+                {/* </NavLink> */}
+                </li>
+                <li>
+                <a href="/cart">
                     <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="cart"></img>
-                </NavLink>
+                </a>
+                </li>
+            </ul> 
                 
         </nav>
     );
