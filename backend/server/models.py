@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData, ForeignKey
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import validates
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 
@@ -10,6 +12,13 @@ metadata = MetaData()
 # A Flask SQLAlchemy extension
 db = SQLAlchemy(metadata=metadata)
 
+class SerializerMixin:
+    @declared_attr
+    def serialize_rules(cls):
+        return ["-" + rel.key for rel in cls.__mapper__.relationships] + ["*"]
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 class Book(db.Model, SerializerMixin):
     __tablename__ = 'book_table'
@@ -17,18 +26,16 @@ class Book(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=True, nullable=False)
     author = db.Column(db.String(100))
-    # isbn = db.Column(db.String, unique=True)
+    isbn = db.Column(db.String, unique=True)
     page_count = db.Column(db.Integer)
     summary = db.Column(db.Text)
     detail = db.Column(db.Text)
     table_of_contents = db.Column(db.Text)
     price = db.Column(db.Integer)
     published_date = db.Column(db.Date)
-    book_image_file_path = db.Column(db.String)
+    book_image = db.Column(db.String)
 
-    # book_image_id = db.Column(db.Integer, db.ForeignKey('book_image_table.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category_table.id'))
-
     category = db.relationship("Category", back_populates="book")
 
     likes = db.relationship("Like", back_populates="book", cascade="all, delete-orphan")
@@ -36,10 +43,10 @@ class Book(db.Model, SerializerMixin):
     book_review = db.relationship("BookReview", back_populates="book", cascade="all, delete-orphan")
     order_details = db.relationship("OrderDetail", back_populates="book")
 
-    serialize_rules = ["-likes.book", "-cart_list.book"]
+    serialize_rules = ["-likes.user.likes", "-cart_list.user.cart_list", "-book_review.book", "-order_details.book.order_details"]
 
     def __repr__(self):
-        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image_file_path}, {self.category_id}>"
+        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image}, {self.category_id}>"
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'user_table'
@@ -63,7 +70,6 @@ class User(db.Model, SerializerMixin):
 class Like(db.Model, SerializerMixin):
     __tablename__ = 'like_table'
 
-    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_table.id'), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'), primary_key=True)
 
@@ -96,6 +102,7 @@ class BookReview(db.Model, SerializerMixin):
     __tablename__ = 'book_review_table'
 
     id = db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Integer)
     reviewer = db.Column(db.String)
     comment = db.Column(db.Text)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -103,15 +110,10 @@ class BookReview(db.Model, SerializerMixin):
 
     book = db.relationship("Book", back_populates="book_review")
 
+    serialize_rules = ["*"]
+
     def __repr__(self):
-        return f"<Book Review {self.id}: {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
-
-# class BookImage(db.Model, SerializerMixin):
-#     __tablename__ = 'book_image_table'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'))
-#     file_path = db.Column(db.String)
+        return f"<Book Review {self.id}: {self.rating}, {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
 
 
 class Category(db.Model, SerializerMixin):
@@ -121,6 +123,8 @@ class Category(db.Model, SerializerMixin):
     name = db.Column(db.String(100), unique=True)
 
     book = db.relationship("Book", back_populates="category")
+
+    serialize_rules = ["*"]
 
     def __repr__(self):
         return f"<Category {self.id}: {self.name}>"
@@ -136,7 +140,9 @@ class Order(db.Model, SerializerMixin):
 
     user = db.relationship("User", back_populates="orders")
     delivery = db.relationship("Delivery", back_populates="orders")
-    order_details = db.relationship("OrderDetail", back_populates="orders")
+    order_details = db.relationship("OrderDetail", back_populates="order")
+
+    serialize_rules = ["*"]
 
     def __repr__(self):
         return f"<Order {self.id}: {self.total_price}, {self.ordered_at}, {self.user_id}, {self.delivery_id}>"
@@ -150,20 +156,23 @@ class Delivery(db.Model, SerializerMixin):
     contact = db.Column(db.String)
 
     orders = db.relationship("Order", back_populates="delivery", cascade="all, delete-orphan")
+
+    serialize_rules = ["*"]
+
     def __repr__(self):
         return f"<Delivery {self.id}: {self.address}, {self.recipient}, {self.contact}>"
 
 class OrderDetail(db.Model, SerializerMixin):
     __tablename__ = 'order_detail_table'
 
-    id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('order_table.id'), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book_table.id'), primary_key=True)
     quantity = db.Column(db.Integer)
 
-    orders = db.relationship("Order", back_populates="order_details")
+    order = db.relationship("Order", back_populates="order_details")
     book = db.relationship("Book", back_populates="order_details")
 
+    serialize_rules = ["-order.order_details", "-book.order_details"]
     
 
     def __repr__(self):

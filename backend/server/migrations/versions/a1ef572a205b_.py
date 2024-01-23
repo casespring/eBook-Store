@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: ab27935a46f4
+Revision ID: a1ef572a205b
 Revises: 
-Create Date: 2024-01-22 14:28:14.890981
+Create Date: 2024-01-23 15:22:14.097777
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ab27935a46f4'
+revision = 'a1ef572a205b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,16 +46,18 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('author', sa.String(length=100), nullable=True),
+    sa.Column('isbn', sa.String(), nullable=True),
     sa.Column('page_count', sa.Integer(), nullable=True),
     sa.Column('summary', sa.Text(), nullable=True),
     sa.Column('detail', sa.Text(), nullable=True),
     sa.Column('table_of_contents', sa.Text(), nullable=True),
     sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('published_date', sa.Date(), nullable=True),
-    sa.Column('book_image_file_path', sa.String(), nullable=True),
+    sa.Column('book_image', sa.String(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category_table.id'], ),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('isbn'),
     sa.UniqueConstraint('title')
     )
     op.create_table('order_table',
@@ -70,6 +72,7 @@ def upgrade():
     )
     op.create_table('book_review_table',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('rating', sa.Integer(), nullable=True),
     sa.Column('reviewer', sa.String(), nullable=True),
     sa.Column('comment', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
@@ -87,21 +90,19 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('like_table',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['book_id'], ['book_table.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user_table.id'], ),
-    sa.PrimaryKeyConstraint('id', 'user_id', 'book_id')
+    sa.PrimaryKeyConstraint('user_id', 'book_id')
     )
     op.create_table('order_detail_table',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['book_id'], ['book_table.id'], ),
     sa.ForeignKeyConstraint(['order_id'], ['order_table.id'], ),
-    sa.PrimaryKeyConstraint('id', 'order_id', 'book_id')
+    sa.PrimaryKeyConstraint('order_id', 'book_id')
     )
     # ### end Alembic commands ###
 
