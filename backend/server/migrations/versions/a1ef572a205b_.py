@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: e2f4fb9a45a3
+Revision ID: a1ef572a205b
 Revises: 
-Create Date: 2024-01-22 21:12:12.114111
+Create Date: 2024-01-23 15:22:14.097777
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e2f4fb9a45a3'
+revision = 'a1ef572a205b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -72,6 +72,7 @@ def upgrade():
     )
     op.create_table('book_review_table',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('rating', sa.Integer(), nullable=True),
     sa.Column('reviewer', sa.String(), nullable=True),
     sa.Column('comment', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
@@ -89,21 +90,19 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('like_table',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['book_id'], ['book_table.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user_table.id'], ),
-    sa.PrimaryKeyConstraint('id', 'user_id', 'book_id')
+    sa.PrimaryKeyConstraint('user_id', 'book_id')
     )
     op.create_table('order_detail_table',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['book_id'], ['book_table.id'], ),
     sa.ForeignKeyConstraint(['order_id'], ['order_table.id'], ),
-    sa.PrimaryKeyConstraint('id', 'order_id', 'book_id')
+    sa.PrimaryKeyConstraint('order_id', 'book_id')
     )
     # ### end Alembic commands ###
 

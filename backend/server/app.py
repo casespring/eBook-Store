@@ -6,7 +6,7 @@ from flask_cors import CORS
 from dotenv import dotenv_values
 from models import db, Book, User, Like, Cart, BookReview, Category, Order, Delivery, OrderDetail
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.orm.exc import NoResultFound, NotFound
+from sqlalchemy.orm.exc import NoResultFound
 import os
 
 app = Flask(__name__)
@@ -28,14 +28,14 @@ def home():
 @app.route('/books')
 def get_books():
     books = Book.query.all()
-    return [book.to_dict() for book in books]
+    return [book.as_dict() for book in books]
 
 @app.route('/books/<int:id>')
 def get_book_by_id(id):
     book = Book.query.filter(Book.id == id).first()
     if not book:
         return {"error": "Book not found"}
-    return book.to_dict()
+    return book.as_dict()
 
 @app.patch('/books/<int:id>')
 def patch_book(id):
@@ -48,7 +48,7 @@ def patch_book(id):
             setattr(book, attribute, data[attribute])
         db.session.add(book)
         db.session.commit()
-        return book.to_dict(), 202
+        return book.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -70,7 +70,7 @@ def post_book():
         )
         db.session.add(new_book)
         db.session.commit()
-        return new_book.to_dict(), 201
+        return new_book.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -87,14 +87,14 @@ def delete_book(id):
 @app.route('/users')
 def get_users():
     users = User.query.all()
-    return [user.to_dict() for user in users]
+    return [user.as_dict() for user in users]
 
 @app.route('/users/<int:id>')
 def get_users_by_id(id):
     user = User.query.filter(User.id == id).first()
     if not user:
         return {"error": "User not found"}
-    return user.to_dict()
+    return user.as_dict()
 
 @app.patch('/users/<int:id>')
 def patch_user(id):
@@ -107,7 +107,7 @@ def patch_user(id):
             setattr(user, attribute, data[attribute])
         db.session.add(user)
         db.session.commit()
-        return user.to_dict(), 202
+        return user.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -128,7 +128,7 @@ def post_user():
         )
         db.session.add(new_user)
         db.session.commit()
-        return new_user.to_dict(), 201
+        return new_user.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -142,6 +142,11 @@ def delete_user(id):
     return {}, 204
 
 #Likes Crud
+@app.route('/likes', methods=['GET'])
+def get_likes():
+    likes = Like.query.all()
+    return [like.as_dict() for like in likes]
+
 @app.post('/likes')
 def post_like():
     try:
@@ -149,7 +154,7 @@ def post_like():
         new_like = Like(user_id=data.get('user_id'), book_id=data.get('book_id'))
         db.session.add(new_like)
         db.session.commit()
-        return new_like.to_dict(), 201
+        return new_like.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -169,7 +174,7 @@ def get_carts_by_user_id(user_id):
         carts = Cart.query.filter(Cart.user_id == user_id).all()
         if not carts:
             return {"error": "Empty cart found for the user"}, 404
-        cart_info = [cart.to_dict() for cart in carts]
+        cart_info = [cart.as_dict() for cart in carts]
         return cart_info, 200
     except ValueError:
         return {"error": "User not found"}, 404
@@ -185,7 +190,7 @@ def patch_cart(id):
             setattr(cart, attribute, data[attribute])
         db.session.add(cart)
         db.session.commit()
-        return cart.to_dict(), 202
+        return cart.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -200,7 +205,7 @@ def post_cart():
         )
         db.session.add(new_cart)
         db.session.commit()
-        return new_cart.to_dict(), 201
+        return new_cart.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -220,7 +225,7 @@ def post_cart():
 #         )
 #         db.session.add(new_cart)
 #         db.session.commit()
-#         return new_cart.to_dict(), 201
+#         return new_cart.as_dict(), 201
 #     except ValueError:
 #         return make_response({"errors": ["Validation errors"]}, 400)
 
@@ -239,7 +244,7 @@ def get_book_reviews_by_book_id(book_id):
     book = Book.query.get(book_id)
     if not book:
         return {"error": "Book not found"}, 404
-    book_reviews = [review.to_dict() for review in book.book_review]
+    book_reviews = [review.as_dict() for review in book.book_review]
     return book_reviews, 200
 
 @app.patch('/book_reviews/<int:id>')
@@ -253,7 +258,7 @@ def patch_book_review(id):
             setattr(book_review, attribute, data[attribute])
         db.session.add(book_review)
         db.session.commit()
-        return book_review.to_dict(), 202
+        return book_review.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -264,7 +269,7 @@ def post_book_review():
         new_book_review = BookReview(reviewer=data.get('reviewer'), comment=data.get('comment'), created_at=data.get('created_at'), book_id=data.get('book_id'))
         db.session.add(new_book_review)
         db.session.commit()
-        return new_book_review.to_dict(), 201
+        return new_book_review.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -284,7 +289,7 @@ def get_orders_by_user_id(user_id):
         orders = Order.query.filter(Order.user_id == user_id).all()
         if not orders:
             return {"error": "No orders found for the user"}, 404
-        orders_info = [order.to_dict() for order in orders]
+        orders_info = [order.as_dict() for order in orders]
         return orders_info, 200
     except ValueError:
         return {"error": "User not found"}, 404
@@ -294,7 +299,7 @@ def get_orders_by_id(id):
     order = Order.query.filter(Order.id == id).first()
     if not order:
         return {"error": "Order not found"}
-    return order.to_dict()
+    return order.as_dict()
 
 @app.patch('/orders/<int:id>')
 def patch_order(id):
@@ -307,7 +312,7 @@ def patch_order(id):
             setattr(order, attribute, data[attribute])
         db.session.add(order)
         db.session.commit()
-        return order.to_dict(), 202
+        return order.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -322,7 +327,7 @@ def post_order():
             delivery_id=data.get('delivery_id'))
         db.session.add(new_order)
         db.session.commit()
-        return new_order.to_dict(), 201
+        return new_order.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -339,14 +344,14 @@ def delete_order(id):
 @app.route('/deliveries')
 def get_deliveries():
     deliveries = Delivery.query.all()
-    return [delivery.to_dict() for delivery in deliveries]
+    return [delivery.as_dict() for delivery in deliveries]
 
 @app.route('/deliveries/<int:id>')
 def get_delivery_by_id(id):
     delivery = Delivery.query.filter(Delivery.id == id).first()
     if not delivery:
         return {"error": "Delivery not found"}
-    return delivery.to_dict()
+    return delivery.as_dict()
 
 @app.patch('/deliveries/<int:id>')
 def patch_delivery(id):
@@ -359,7 +364,7 @@ def patch_delivery(id):
             setattr(delivery, attribute, data[attribute])
         db.session.add(delivery)
         db.session.commit()
-        return delivery.to_dict(), 202
+        return delivery.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -373,7 +378,7 @@ def post_delivery():
             contact=data.get('contact'))
         db.session.add(new_delivery)
         db.session.commit()
-        return new_delivery.to_dict(), 201
+        return new_delivery.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -393,7 +398,7 @@ def get_order_details_by_order_id(order_id):
         order_details = OrderDetail.query.filter(OrderDetail.order_id == order_id).all()
         if not order_details:
             return {"error": "Empty details found for the order"}, 404
-        cart_info = [order_detail.to_dict() for order_detail in order_details]
+        cart_info = [order_detail.as_dict() for order_detail in order_details]
         return cart_info, 200
     except NoResultFound:
         return {"error": "Order not found"}, 404
@@ -409,7 +414,7 @@ def patch_order_detail(id):
             setattr(order_detail, attribute, data[attribute])
         db.session.add(order_detail)
         db.session.commit()
-        return order_detail.to_dict(), 202
+        return order_detail.as_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -423,7 +428,7 @@ def post_order_detail():
             quantity=data.get('quantity'))
         db.session.add(new_order_detail)
         db.session.commit()
-        return new_order_detail.to_dict(), 201
+        return new_order_detail.as_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     

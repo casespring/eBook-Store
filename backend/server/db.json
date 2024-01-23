@@ -1,48 +1,155 @@
+
+
 {
+    "categories": [
+      {"name": "Fiction"},
+      {"name": "Non-Fiction"}
+    ],
     "books": [
-        {
-            "title" : "Wizard of Oz",
-            "author" : "Jason James",
-            "isbn" : 11111
-        },
-        {
-            "title" : "Alice in Wonderland",
-            "author" : "Lewis Carroll",
-            "isbn" : 11112
-        },
-        {
-            "title" : "Alice through the Looking Glass",
-            "author" : "Lewis Carroll",
-            "isbn" : 11113
-        }
+      {
+        "title": "Sample Book 1",
+        "author": "Author 1",
+        "isbn": "123456789",
+        "page_count": 200,
+        "summary": "This is a sample summary for Book 1",
+        "detail": "Detailed information about Book 1",
+        "table_of_contents": "Table of contents for Book 1",
+        "price": 20,
+        "published_date": "2022-01-01",
+        "book_image": "sample_image_url",
+        "category_id": 1
+      },
+      {
+        "title": "Sample Book 2",
+        "author": "Author 2",
+        "isbn": "987654321",
+        "page_count": 250,
+        "summary": "This is a sample summary for Book 2",
+        "detail": "Detailed information about Book 2",
+        "table_of_contents": "Table of contents for Book 2",
+        "price": 25,
+        "published_date": "2022-02-01",
+        "book_image": "another_sample_image_url",
+        "category_id": 2
+      },
+      {
+        "title" : "Wizard of Oz",
+        "author" : "Jason James",
+        "isbn" : 11111
+      },
+      {
+        "title" : "Alice in Wonderland",
+        "author" : "Lewis Carroll",
+        "isbn" : 11112
+      },
+      {
+        "title" : "Alice through the Looking Glass",
+        "author" : "Lewis Carroll",
+        "isbn" : 11113
+      }
     ],
-    "book_review": [
-        {
-            "reviewer" : "Jason James",
-            "comment" : "Love the book",
-            "created_at" : "1/22/2024"    
-        }
+    "users": [
+      {
+        "email": "user1@example.com",
+        "name": "User 1",
+        "password": "hashed_password",
+        "salt": "salt_value"
+      },
+      {
+        "email": "user2@example.com",
+        "name": "User 2",
+        "password": "hashed_password",
+        "salt": "salt_value"
+      },
+      {
+        "email" : "Harrietj@jmail.com",
+        "name" : "Mr. Amazon",
+        "password" : "yijknk"
+      },
+      {
+        "email" : "Anderson@jmail.com",
+        "name" : "John Johnson",
+        "password" : "ejjmgfeny"
+      },
+      {
+        "email" : "jjj@jmail.com",
+        "name" : "James Johnson",
+        "password" : "yyyyy"
+      }
     ],
-    "user": [
-        {
-            "email" : "jjj@jmail.com",
-            "name" : "James Johnson",
-            "password" : "yyyyy"
-        },
-        {
-            "email" : "Anderson@jmail.com",
-            "name" : "John Johnson",
-            "password" : "ejjmgfeny"
-        },
-        {
-            "email" : "Harrietj@jmail.com",
-            "name" : "Mr. Amazon",
-            "password" : "yijknk"
-        }
-    ], 
-    "order": [
-        {
-            "total_price" : 400
-        }
+    "book_reviews": [
+      {
+        "reviewer": "Reviewer 1",
+        "comment": "This is a sample review for Book 1",
+        "created_at": "2022-03-01",
+        "book_id": 1
+      },
+      {
+        "reviewer": "Reviewer 2",
+        "comment": "This is a sample review for Book 2",
+        "created_at": "2022-04-01",
+        "book_id": 2
+      }
+    ],
+    "carts": [
+      {
+        "quantity": 2,
+        "user_id": 1,
+        "book_id": 1
+      },
+      {
+        "quantity": 1,
+        "user_id": 2,
+        "book_id": 2
+      }
+    ],
+    "likes": [
+      {
+        "user_id": 1,
+        "book_id": 2
+      },
+      {
+        "user_id": 2,
+        "book_id": 1
+      }
+    ],
+    "orders": [
+      {
+        "total_price": 45,
+        "ordered_at": "2022-05-01",
+        "user_id": 1,
+        "delivery_id": 1
+      },
+      {
+        "total_price": 30,
+        "ordered_at": "2022-06-01",
+        "user_id": 2,
+        "delivery_id": 2
+      }
+    ],
+    "deliveries": [
+      {
+        "address": "Address 1",
+        "recipient": "Recipient 1",
+        "contact": "Contact 1"
+      },
+      {
+        "address": "Address 2",
+        "recipient": "Recipient 2",
+        "contact": "Contact 2"
+      }
+    ],
+    "order_details": [
+      {
+        "order_id": 1,
+        "book_id": 1,
+        "quantity": 2
+      },
+      {
+        "order_id": 2,
+        "book_id": 2,
+        "quantity": 1
+      }
     ]
-}
+  }
+  
