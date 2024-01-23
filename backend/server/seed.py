@@ -1,5 +1,6 @@
 from app import app
 from models import db, Book, BookReview, User, Order, Category
+from random import randint, choice as rc
 import json
 from datetime import datetime
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
             b = Book(
                 title = book.get('title'),
                 author = book.get('author'),
-                # isbn = book.get('isbn'),
+                isbn = book.get('isbn'),
                 # page_count = book.get('page_count'),
                 # summary = book.get('summary'),
                 # detail = book.get('detail'),

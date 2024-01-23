@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: ab27935a46f4
+Revision ID: e2f4fb9a45a3
 Revises: 
-Create Date: 2024-01-22 14:28:14.890981
+Create Date: 2024-01-22 21:12:12.114111
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ab27935a46f4'
+revision = 'e2f4fb9a45a3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,16 +46,18 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('author', sa.String(length=100), nullable=True),
+    sa.Column('isbn', sa.String(), nullable=True),
     sa.Column('page_count', sa.Integer(), nullable=True),
     sa.Column('summary', sa.Text(), nullable=True),
     sa.Column('detail', sa.Text(), nullable=True),
     sa.Column('table_of_contents', sa.Text(), nullable=True),
     sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('published_date', sa.Date(), nullable=True),
-    sa.Column('book_image_file_path', sa.String(), nullable=True),
+    sa.Column('book_image', sa.String(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category_table.id'], ),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('isbn'),
     sa.UniqueConstraint('title')
     )
     op.create_table('order_table',

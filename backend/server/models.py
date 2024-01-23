@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData, ForeignKey
 from sqlalchemy.orm import validates
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 
@@ -17,14 +18,14 @@ class Book(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=True, nullable=False)
     author = db.Column(db.String(100))
-    # isbn = db.Column(db.String, unique=True)
+    isbn = db.Column(db.String, unique=True)
     page_count = db.Column(db.Integer)
     summary = db.Column(db.Text)
     detail = db.Column(db.Text)
     table_of_contents = db.Column(db.Text)
     price = db.Column(db.Integer)
     published_date = db.Column(db.Date)
-    book_image_file_path = db.Column(db.String)
+    book_image = db.Column(db.String)
 
     # book_image_id = db.Column(db.Integer, db.ForeignKey('book_image_table.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category_table.id'))
@@ -39,7 +40,7 @@ class Book(db.Model, SerializerMixin):
     serialize_rules = ["-likes.book", "-cart_list.book"]
 
     def __repr__(self):
-        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image_file_path}, {self.category_id}>"
+        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image}, {self.category_id}>"
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'user_table'
@@ -106,6 +107,7 @@ class BookReview(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Book Review {self.id}: {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
 
+# bookImage no need 
 # class BookImage(db.Model, SerializerMixin):
 #     __tablename__ = 'book_image_table'
 
