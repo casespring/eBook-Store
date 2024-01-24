@@ -4,6 +4,7 @@ import Profile from "./components/Profile"
 import Cart from "./components/Cart"
 import Home from "./components/Home"
 import BookDetails from "./components/BookDetails"
+import Checkout from "./components/Checkout"
 
 const routes = [
     {
@@ -29,6 +30,10 @@ const routes = [
             {
                 path: "/book/:id",
                 element: <BookDetails />
+            },
+            {
+                path: "/checkout",
+                element: <Checkout />
             }
         ]
 }

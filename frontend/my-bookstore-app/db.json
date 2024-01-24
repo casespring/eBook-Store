@@ -66,11 +66,38 @@
   "order": [],
   "cart": [
     {
-      "image": "https://prodimage.images-bn.com/pimages/9781946260154_p0_v2_s192x300.jpg",
-      "title": "Wizard of Oz",
-      "author": "Jason James",
-      "price": 10,
+      "image": "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg",
+      "title": "Alice in Wonderland",
+      "author": "Lewis Carroll",
+      "price": 12.99,
       "state": true,
+      "id": 1
+    },
+    {
+      "image": "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg",
+      "title": "Alice in Wonderland",
+      "author": "Lewis Carroll",
+      "price": 12.99,
+      "state": true,
+      "id": 2
+    }
+  ],
+  "cart_total": [
+    {
+      "total": 12.99,
+      "id": 1
+    }
+  ],
+  "user_submitted_order": [
+    {
+      "fname": "11",
+      "lname": "11111",
+      "streetname": "111",
+      "city": "111",
+      "state": "IN",
+      "zipcode": "111",
+      "phonenumber": "11111111111111111",
+      "cartTotal": 12.99,
       "id": 1
     }
   ]
