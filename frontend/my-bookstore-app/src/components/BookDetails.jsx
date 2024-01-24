@@ -23,6 +23,19 @@ function BookDetails() {
         })
     },[]);
     const renderReviews = reviews.map((review) => <ReviewSection review={review}/>);
+    function handleClick() {
+        fetch("http://localhost:3000/cart", {
+            method: 'POST',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({
+                image: books.image,
+                title: books.title,
+                author: books.author,
+                price: books.price,
+                state: true
+            })
+    })
+    }
     
     return (
         <>
@@ -32,7 +45,7 @@ function BookDetails() {
                 <p>Title: {books.title}</p>
                 <p>Author: {books.author}</p>
                 <p>${books.price}</p>
-                <button>Add to Cart</button>
+                <button onClick={handleClick}>Add to Cart</button>
             </div>
         </div>
 

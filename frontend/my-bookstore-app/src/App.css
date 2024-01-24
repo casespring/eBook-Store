@@ -49,6 +49,10 @@ a {
   display: flex
 }
 
+.cart-container {
+  display: flex
+}
+
 @media screen and (max-width: 768px) {
   nav {
     background-color: red;
