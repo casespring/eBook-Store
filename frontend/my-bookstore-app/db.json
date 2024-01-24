@@ -1,71 +1,77 @@
 {
-    "books": [
-        {
-            "id": 1,
-            "title" : "Wizard of Oz",
-            "author" : "Jason James",
-            "price" : 10.00,
-            "isbn" : 11111,
-            "image" : "https://prodimage.images-bn.com/pimages/9781946260154_p0_v2_s192x300.jpg"
-        },
-        {
-            "id": 2,
-            "title" : "Alice in Wonderland",
-            "author" : "Lewis Carroll",
-            "price" : 12.99,
-            "isbn" : 11112,
-            "image" : "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg"
-        },
-        {
-            "id": 3,
-            "title" : "Alice through the Looking Glass",
-            "author" : "Lewis Carroll",
-            "price" : 10.29,
-            "isbn" : 11113,
-            "image" : "https://prodimage.images-bn.com/pimages/9781954839199_p0_v2_s192x300.jpg"
-        }
-    ],
-    "book_review": [
-        {
-            "id" : 1,
-            "reviewer" : "James Johnson",
-            "comment" : "Love the book",
-            "created_at" : "1/22/2024",
-            "bookId" : 1,
-            "userId": 1
-        },
-        {
-            "id" : 2, 
-            "reviewer" : "Horus HEHE Johnson",
-            "comment" : "HATE the book",
-            "created_at" : "4/22/2024",
-            "bookId" : 2,
-            "userId": 1
-        }
-    ],
-    "user": [
-        {
-            "id": 1,
-            "email" : "jjj@jmail.com",
-            "name" : "James Johnson",
-            "password" : "yyyyy"
-        },
-        {
-            "id" : 2,
-            "email" : "Anderson@jmail.com",
-            "name" : "John Johnson",
-            "password" : "ejjmgfeny"
-        },
-        {
-            "id": 3,
-            "email" : "Harrietj@jmail.com",
-            "name" : "Mr. Amazon",
-            "password" : "yijknk"
-        }
-    ], 
-    "order": [
-        {
-            "total_price" : 400
-        }
-    ]
+  "books": [
+    {
+      "id": 1,
+      "title": "Wizard of Oz",
+      "author": "Jason James",
+      "price": 10,
+      "isbn": 11111,
+      "image": "https://prodimage.images-bn.com/pimages/9781946260154_p0_v2_s192x300.jpg"
+    },
+    {
+      "id": 2,
+      "title": "Alice in Wonderland",
+      "author": "Lewis Carroll",
+      "price": 12.99,
+      "isbn": 11112,
+      "image": "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Alice through the Looking Glass",
+      "author": "Lewis Carroll",
+      "price": 10.29,
+      "isbn": 11113,
+      "image": "https://prodimage.images-bn.com/pimages/9781954839199_p0_v2_s192x300.jpg"
+    }
+  ],
+  "book_review": [
+    {
+      "id": 1,
+      "reviewer": "James Johnson",
+      "comment": "Love the book",
+      "created_at": "1/22/2024",
+      "bookId": 1,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "reviewer": "Horus HEHE Johnson",
+      "comment": "HATE the book",
+      "created_at": "4/22/2024",
+      "bookId": 2,
+      "userId": 1
+    }
+  ],
+  "user": [
+    {
+      "id": 1,
+      "email": "jjj@jmail.com",
+      "name": "James Johnson",
+      "password": "yyyyy"
+    },
+    {
+      "id": 2,
+      "email": "Anderson@jmail.com",
+      "name": "John Johnson",
+      "password": "ejjmgfeny"
+    },
+    {
+      "id": 3,
+      "email": "Harrietj@jmail.com",
+      "name": "Mr. Amazon",
+      "password": "yijknk"
+    }
+  ],
+  "order": [],
+  "cart": [
+    {
+      "image": "https://prodimage.images-bn.com/pimages/9781946260154_p0_v2_s192x300.jpg",
+      "title": "Wizard of Oz",
+      "author": "Jason James",
+      "price": 10,
+      "state": true,
+      "id": 1
+    }
+  ]
 }
