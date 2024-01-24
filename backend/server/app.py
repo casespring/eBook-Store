@@ -1,22 +1,24 @@
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api, Resource
+# from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
 from dotenv import dotenv_values
 from models import db, Book, User, Like, Cart, BookReview, Category, Order, Delivery, OrderDetail
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_bcrypt import Bcrypt
 from sqlalchemy.orm.exc import NoResultFound
 import os
 
 app = Flask(__name__)
 # config = dotenv_values('.env')
-# app.secret_key = config['FLASK_SECRET_KEY']
+app.secret_key = "asdfwer243523423asdrwr"
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 migrate = Migrate(app, db)
 db.init_app(app)
+bcrypt = Bcrypt(app)
 
 
 
@@ -30,12 +32,46 @@ def get_books():
     books = Book.query.all()
     return [book.as_dict() for book in books]
 
+####################################   VALIDATION ##########################################
+
+
+
+# CHECK SESSION
+@app.get('/check_session')
+def check_session():
+    user = db.session.get(User, session.get('user_id'))
+    print(f'check session {session.get("user_id")}')
+    if user:
+        return user.to_dict(rules=['-password']), 200
+    else:
+        return {"message": "No user logged in"}, 401
+
+# LOGIN
+@app.post('/login')
+def login():
+    data = request.json
+
+    user = User.query.filter(User.name == data.get('name')).first()
+
+    if user and bcrypt.check_password_hash(user.password, data.get('password')):
+        session["user_id"] = user.id
+        print("success")
+        return user.to_dict(rules=['-password']), 200
+    else:
+        return { "error": "Invalid username or password" }, 401
+
+
+####################################   VALIDATION ##########################################
+
+
 @app.route('/books/<int:id>')
 def get_book_by_id(id):
     book = Book.query.filter(Book.id == id).first()
     if not book:
         return {"error": "Book not found"}
     return book.as_dict()
+
+
 
 @app.patch('/books/<int:id>')
 def patch_book(id):

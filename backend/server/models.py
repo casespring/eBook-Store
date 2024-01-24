@@ -12,13 +12,13 @@ metadata = MetaData()
 # A Flask SQLAlchemy extension
 db = SQLAlchemy(metadata=metadata)
 
-class SerializerMixin:
-    @declared_attr
-    def serialize_rules(cls):
-        return ["-" + rel.key for rel in cls.__mapper__.relationships] + ["*"]
+# class SerializerMixin:
+#     @declared_attr
+#     def serialize_rules(cls):
+#         return ["-" + rel.key for rel in cls.__mapper__.relationships] + ["*"]
 
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+#     def as_dict(self):
+#         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 class Book(db.Model, SerializerMixin):
     __tablename__ = 'book_table'
@@ -62,7 +62,7 @@ class User(db.Model, SerializerMixin):
     cart_list = db.relationship("Cart", back_populates="user", cascade="all, delete-orphan")
     orders = db.relationship("Order", back_populates="user", cascade="all, delete-orphan")
 
-    serialize_rules = ["-likes.user", "-cart_list.user"]
+    serialize_rules = ["-likes", "-cart_list", "-orders"]
 
     def __repr__(self):
         return f"<User {self.id}: {self.email}, {self.name}, {self.password}, {self.salt}, {self.created_at}>"
@@ -110,7 +110,7 @@ class BookReview(db.Model, SerializerMixin):
 
     book = db.relationship("Book", back_populates="book_review")
 
-    serialize_rules = ["*"]
+    serialize_rules = ["-book"]
 
     def __repr__(self):
         return f"<Book Review {self.id}: {self.rating}, {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
@@ -124,7 +124,7 @@ class Category(db.Model, SerializerMixin):
 
     book = db.relationship("Book", back_populates="category")
 
-    serialize_rules = ["*"]
+    serialize_rules = ["-book"]
 
     def __repr__(self):
         return f"<Category {self.id}: {self.name}>"
@@ -142,7 +142,7 @@ class Order(db.Model, SerializerMixin):
     delivery = db.relationship("Delivery", back_populates="orders")
     order_details = db.relationship("OrderDetail", back_populates="order")
 
-    serialize_rules = ["*"]
+    serialize_rules = ["-user", '-delivery','-order_details']
 
     def __repr__(self):
         return f"<Order {self.id}: {self.total_price}, {self.ordered_at}, {self.user_id}, {self.delivery_id}>"
@@ -157,7 +157,7 @@ class Delivery(db.Model, SerializerMixin):
 
     orders = db.relationship("Order", back_populates="delivery", cascade="all, delete-orphan")
 
-    serialize_rules = ["*"]
+    serialize_rules = ["-order"]
 
     def __repr__(self):
         return f"<Delivery {self.id}: {self.address}, {self.recipient}, {self.contact}>"
