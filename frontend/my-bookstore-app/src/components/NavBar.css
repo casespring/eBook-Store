@@ -1,0 +1,19 @@
+.search {
+    flex: 1 1 auto;
+    margin: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+  .searchbar {
+    width: 189%;
+    font-size: 1rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    border: 3px solid #607D8B;
+    border-radius: 11px;
+    padding-left: 0.5rem;
+    box-shadow: 0 5px 5px #0000001a;
+  }
+  

@@ -1,0 +1,31 @@
+.reviews {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Two columns, adjust the ratios as needed */
+    grid-gap: 1em; /* Adjust the gap between grid items */
+    margin-bottom: 1em; /* Add space between reviews */
+}
+
+.reviews p {
+    margin: 0; /* Remove default margin for paragraphs */
+}
+
+.reviews .reviewer {
+    grid-column: 1 / 2; /* Place the reviewer in the first column */
+    grid-row: span 2; /* Span two rows for the reviewer */
+}
+
+.book-name {
+    font-weight: bold; /* Make book name bold, adjust as needed */
+}
+
+.reviews .rating {
+    grid-column: 2 / 3; /* Place the rating in the second column */
+}
+
+.reviews .comment {
+    grid-column: 1 / -1; /* Span across all columns */
+}
+
+.reviews .created-at {
+    justify-self: end; /* Align to the end (right) within its grid cell */
+}

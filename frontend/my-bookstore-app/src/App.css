@@ -28,6 +28,24 @@ nav {
   height: 20px; 
 }
 
+.search {
+  flex: 1 1 auto;
+  margin: 0 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.serachbar {
+  width: 189%;
+  font-size: 1rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+  border: 3px solid #607D8B;
+  border-radius: 11px;
+  padding-left: 0.5rem;
+  box-shadow: 0 5px 5px #0000001a;
+}
+
 .logo {
   color: black;
   font-size: 2rem;
@@ -40,16 +58,10 @@ nav {
 a {
   text-decoration: none;
 }
-
-.card-container {
-  display:flex
+body {
+  overflow: hidden;
 }
-
 .book-container {
-  display: flex
-}
-
-.cart-container {
   display: flex
 }
 

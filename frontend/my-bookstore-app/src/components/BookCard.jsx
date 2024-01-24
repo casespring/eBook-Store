@@ -1,18 +1,19 @@
 // import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import "./BookCard.css";
 
 function BookCard( {book} ) {
 
     return (
-        <div>
+        <div className="book-card">
             <Link to={`/book/${book.id}`}>
-                <img src={book.image}></img>
+                <img className="book-image" src={book.image} alt={book.title}></img>
             </Link>
             <p>Title: {book.title}</p>
             <p>Author: {book.author}</p>
             <p>${book.price}</p>
         </div>
-    )
+    );
 }
 
 export default BookCard
