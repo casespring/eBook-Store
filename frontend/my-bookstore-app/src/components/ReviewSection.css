@@ -1,8 +1,19 @@
-.reviews {
+/* .reviews {
     display: grid;
-    grid-template-columns: 1fr 2fr; /* Two columns, adjust the ratios as needed */
-    grid-gap: 1em; /* Adjust the gap between grid items */
-    margin-bottom: 1em; /* Add space between reviews */
+    grid-template-columns: 1fr 2fr; 
+    grid-gap: 1em; 
+    margin-bottom: 1em; 
+} */
+
+.reviews {
+    border: 1px solid #e5e5e5;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 1em;
+    width: 80%;
+    max-width: 900px;
+    padding: 20px;
+    margin-top: 15px;
 }
 
 .reviews p {
