@@ -7,87 +7,7 @@ import random
 from faker import Faker
 from sqlalchemy.sql import func 
 from flask_bcrypt import Bcrypt
-# regular seed.py
-# if __name__ == "__main__":
-#     with app.app_context():
-#         with open("db.json") as f:
-#             data = json.load(f)
 
-#         OrderDetail.query.delete()
-#         Order.query.delete()
-#         Cart.query.delete()
-#         Like.query.delete()
-#         BookReview.query.delete()
-#         User.query.delete()
-#         Book.query.delete()
-#         Category.query.delete()
-#         Delivery.query.delete()
-
-#         book_list = []
-#         book_review_list = []
-#         user_data = []
-#         order_data = []
-
-#         #categories first
-#         category_list = []
-#         for category_data in data.get("categories", []):
-#             category = Category(name=category_data.get("name"))
-#             category_list.append(category)
-#         db.session.add_all(category_list)
-#         db.session.commit()
-
-#         for book in data["books"]:
-#             b = Book(
-#                 title = book.get('title'),
-#                 author = book.get('author'),
-#                 isbn = book.get('isbn'),
-#                 # page_count = book.get('page_count'),
-#                 # summary = book.get('summary'),
-#                 # detail = book.get('detail'),
-#                 # table_of_contents = book.get('table_of_contents'),
-#                 # price = book.get('price'),
-#                 # published_date = book.get('published_date')
-#             )
-#             book_list.append(b)
-#         db.session.add_all(book_list)
-#         db.session.commit()
-
-#         for review in data["book_review"]:
-#             date_string = review.get('created_at')
-#             date_format = "%m/%d/%Y"
-#             date_object = datetime.strptime(date_string, date_format)
-#             r = BookReview(
-#                 reviewer=review.get('reviewer'),
-#                 comment=review.get('comment'),
-#                 created_at= date_object,
-#             )
-#             book_review_list.append(r)
-#         db.session.add_all(book_review_list)
-#         db.session.commit()
-
-
-#         for user in data["user"]:
-#         # for user in user_data:
-#             u = User(
-#                 email = user.get('email'),
-#                 name = user.get('name'),
-#                 password = user.get('password'),
-#             )
-#             user_data.append(u)
-#         db.session.add_all(user_data)
-#         db.session.commit()
-
-#         for order in data["order"]:
-#             # for od in order_data:
-#             o = Order(
-#                 total_price = order.get('total_price')
-#             )
-#             order_data.append(o)
-#         db.session.add_all(order_data)
-#         db.session.commit()
-
-
-# Using random and faker to libaries to generate info 
 fake = Faker()
 
 def seed_categories():
@@ -164,9 +84,9 @@ def seed_likes(num_likes=5):
             new_like = Like(user_id=user.id, book_id=book.id)
             like_list.add(new_like)
 
-    db.session.bulk_save_objects(like_list)
+    # Convert the set of Like objects to a list before saving
+    db.session.bulk_save_objects(list(like_list))
     db.session.commit()
-
 
 def seed_carts(num_carts=15):
     users = User.query.all()

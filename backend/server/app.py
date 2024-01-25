@@ -1,6 +1,5 @@
 from flask import Flask, make_response, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
-# from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
 from dotenv import dotenv_values
@@ -83,10 +82,6 @@ def get_books():
 #         return user.to_dict(rules=['-password']), 200
 #     else:
 #         return { "error": "Invalid username or password" }, 401
-
-
-# ####################################   VALIDATION ##########################################
-
 
 @app.route('/api/books/<int:id>')
 def get_book_by_id(id):
@@ -204,7 +199,7 @@ def delete_user(id):
     return {}, 204
 
 #Likes Crud
-@app.route('/liked-books/<int:user_id>', methods=['GET'])
+@app.route('/api/liked-books/<int:user_id>', methods=['GET'])
 def get_liked_books(user_id):
     try:
         # Query the likes for the given user
