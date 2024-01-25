@@ -8,6 +8,7 @@ from models import db, Book, User, Like, Cart, BookReview, Category, Order, Deli
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bcrypt import Bcrypt
 from sqlalchemy.orm.exc import NoResultFound
+from flask_bcrypt import Bcrypt
 import os
 
 app = Flask(__name__)
@@ -26,20 +27,10 @@ bcrypt = Bcrypt(app)
 def home():
     return '<h1>Welcome to the eBook Store Database</h1>'
 
-#Books Crud
-@app.route('/api/books')
-def get_books():
-    books = Book.query.all()
-    return [book.as_dict() for book in books]
-
-####################################   VALIDATION ##########################################
-
-
-
 # CHECK SESSION
 @app.get('/api/check_session')
 def check_session():
-    user = db.session.get(User, session.get('user_id'))
+    user = User.query.get(session.get('user_id'))
     print(f'check session {session.get("user_id")}')
     if user:
         return user.to_dict(rules=['-password']), 200
@@ -49,7 +40,6 @@ def check_session():
 # LOGIN
 @app.post('/api/login')
 def login():
-    print("in login")
     data = request.json
 
     user = User.query.filter(User.name == data.get('name')).first()
@@ -62,21 +52,54 @@ def login():
         return { "error": "Invalid username or password" }, 401
 
 
-####################################   VALIDATION ##########################################
+#Books Crud
+@app.route('/api/books')
+def get_books():
+    books = Book.query.all()
+    return [book.to_dict() for book in books]
+
+
+# # CHECK SESSION
+# @app.get('/api/check_session')
+# def check_session():
+#     user = db.session.get(User, session.get('user_id'))
+#     print(f'check session {session.get("user_id")}')
+#     if user:
+#         return user.to_dict(rules=['-password']), 200
+#     else:
+#         return {"message": "No user logged in"}, 401
+
+# # LOGIN
+# @app.post('/api/login')
+# def login():
+#     print("in login")
+#     data = request.json
+
+#     user = User.query.filter(User.name == data.get('name')).first()
+
+#     if user and bcrypt.check_password_hash(user.password, data.get('password')):
+#         session["user_id"] = user.id
+#         print("success")
+#         return user.to_dict(rules=['-password']), 200
+#     else:
+#         return { "error": "Invalid username or password" }, 401
+
+
+# ####################################   VALIDATION ##########################################
 
 
 @app.route('/api/books/<int:id>')
 def get_book_by_id(id):
-    book = Book.query.filter(Book.id == id).first()
+    book = Book.query.get(id)
     if not book:
         return {"error": "Book not found"}
-    return book.as_dict()
+    return book.to_dict()
 
 
 
 @app.patch('/api/books/<int:id>')
 def patch_book(id):
-    book = db.session.get(Book, id)
+    book = Book.query.get(id)
     if not book:
         return {"error": "Book not found"}, 404
     try:
@@ -85,7 +108,7 @@ def patch_book(id):
             setattr(book, attribute, data[attribute])
         db.session.add(book)
         db.session.commit()
-        return book.as_dict(), 202
+        return book.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -107,13 +130,13 @@ def post_book():
         )
         db.session.add(new_book)
         db.session.commit()
-        return new_book.as_dict(), 201
+        return new_book.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
 @app.delete('/api/books/<int:id>')
 def delete_book(id):
-    book = db.session.get(Book, id)
+    book = Book.query.get(id)
     if not book:
         return {"error": "Book not found"}, 404
     db.session.delete(book)
@@ -124,18 +147,18 @@ def delete_book(id):
 @app.route('/api/users')
 def get_users():
     users = User.query.all()
-    return [user.as_dict() for user in users]
+    return [user.to_dict() for user in users]
 
 @app.route('/api/users/<int:id>')
 def get_users_by_id(id):
-    user = User.query.filter(User.id == id).first()
+    user = User.query.get(id)
     if not user:
         return {"error": "User not found"}
-    return user.as_dict()
+    return user.to_dict()
 
 @app.patch('/api/users/<int:id>')
 def patch_user(id):
-    user = db.session.get(User, id)
+    user = User.query.get(id)
     if not user:
         return {"error": "User not found"}, 404
     try:
@@ -144,7 +167,7 @@ def patch_user(id):
             setattr(user, attribute, data[attribute])
         db.session.add(user)
         db.session.commit()
-        return user.as_dict(), 202
+        return user.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -155,23 +178,22 @@ def patch_user(id):
 def post_user():
     try:
         data = request.json  
-        hashed_password = generate_password_hash(data.get('password'), method='sha256')
+        hashed_password = generate_password_hash(data.get('password'))
         new_user = User(
             email=data.get('email'),
             name=data.get('name'),
             password=hashed_password,
-            salt=data.get('salt'),
             created_at=data.get('created_at')
         )
         db.session.add(new_user)
         db.session.commit()
-        return new_user.as_dict(), 201
+        return new_user.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
 @app.delete('/api/users/<int:id>')
 def delete_user(id):
-    user = db.session.get(User, id)
+    user = User.query.get(id)
     if not user:
         return {"error": "User not found"}, 404
     db.session.delete(user)
@@ -179,10 +201,29 @@ def delete_user(id):
     return {}, 204
 
 #Likes Crud
+@app.route('/liked-books/<int:user_id>', methods=['GET'])
+def get_liked_books(user_id):
+    try:
+        # Query the likes for the given user
+        liked_books = db.session.query(Book).join(Like).filter(Like.user_id == user_id).all()
+
+        # Serialize the liked books
+        liked_books_data = [{
+            'id': book.id,
+            'title': book.title,
+            'author': book.author,
+            # Add other book attributes as needed
+        } for book in liked_books]
+
+        return jsonify(liked_books_data)
+
+    except NoResultFound:
+        return jsonify({'error': 'No liked books found for this user'}), 404
+
 @app.route('/api/likes', methods=['GET'])
 def get_likes():
     likes = Like.query.all()
-    return [like.as_dict() for like in likes]
+    return [like.to_dict() for like in likes]
 
 @app.post('/api/likes')
 def post_like():
@@ -191,13 +232,13 @@ def post_like():
         new_like = Like(user_id=data.get('user_id'), book_id=data.get('book_id'))
         db.session.add(new_like)
         db.session.commit()
-        return new_like.as_dict(), 201
+        return new_like.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
 @app.delete('/api/likes/<int:id>')
 def delete_like(id):
-    like = db.session.get(Like, id)
+    like = Like.query.get(id)
     if not like:
         return {"error": "Like not found"}, 404
     db.session.delete(like)
@@ -210,15 +251,15 @@ def get_carts_by_user_id(user_id):
     try:
         carts = Cart.query.filter(Cart.user_id == user_id).all()
         if not carts:
-            return {"error": "Empty cart found for the user"}, 404
-        cart_info = [cart.as_dict() for cart in carts]
+            return {"error": "No cart found for this user"}, 404
+        cart_info = [cart.to_dict() for cart in carts]
         return cart_info, 200
     except ValueError:
-        return {"error": "User not found"}, 404
+        return [], 200
 
 @app.patch('/api/carts/<int:id>')
 def patch_cart(id):
-    cart = db.session.get(Cart, id)
+    cart = Cart.query.get(id)
     if not cart:
         return {"error": "Cart not found"}, 404
     try:
@@ -227,7 +268,7 @@ def patch_cart(id):
             setattr(cart, attribute, data[attribute])
         db.session.add(cart)
         db.session.commit()
-        return cart.as_dict(), 202
+        return cart.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -242,33 +283,13 @@ def post_cart():
         )
         db.session.add(new_cart)
         db.session.commit()
-        return new_cart.as_dict(), 201
+        return new_cart.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
-    
-# def post_cart():  checks for validations on routes
-#     try:
-#         data = request.json
-
-#         # Check if required fields are present in the incoming JSON data
-#         required_fields = ['quantity', 'user_id', 'book_id']
-#         if not all(field in data for field in required_fields):
-#             return make_response({"errors": ["Required fields are missing"]}, 400)
-
-#         new_cart = Cart(
-#             quantity=data['quantity'],
-#             user_id=data['user_id'],
-#             book_id=data['book_id']
-#         )
-#         db.session.add(new_cart)
-#         db.session.commit()
-#         return new_cart.as_dict(), 201
-#     except ValueError:
-#         return make_response({"errors": ["Validation errors"]}, 400)
 
 @app.delete('/api/carts/<int:id>')
 def delete_cart(id):
-    cart = db.session.get(Cart, id)
+    cart = Cart.query.get(id)
     if not cart:
         return {"error": "Cart not found"}, 404
     db.session.delete(cart)
@@ -276,17 +297,22 @@ def delete_cart(id):
     return {}, 204
 
 #BookReview Crud
+@app.route('/api/book_reviews')
+def get_book_reviews():
+    book_reviews = BookReview.query.all()
+    return [book_review.to_dict() for book_review in book_reviews]
+
 @app.route('/api/book_reviews/<int:book_id>')
 def get_book_reviews_by_book_id(book_id):
     book = Book.query.get(book_id)
     if not book:
         return {"error": "Book not found"}, 404
-    book_reviews = [review.as_dict() for review in book.book_review]
+    book_reviews = [review.to_dict() for review in book.book_review]
     return book_reviews, 200
 
 @app.patch('/api/book_reviews/<int:id>')
 def patch_book_review(id):
-    book_review = db.session.get(BookReview, id)
+    book_review = BookReview.query.get(id)
     if not book_review:
         return {"error": "Book review not found"}, 404
     try:
@@ -295,7 +321,7 @@ def patch_book_review(id):
             setattr(book_review, attribute, data[attribute])
         db.session.add(book_review)
         db.session.commit()
-        return book_review.as_dict(), 202
+        return book_review.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
@@ -306,13 +332,13 @@ def post_book_review():
         new_book_review = BookReview(reviewer=data.get('reviewer'), comment=data.get('comment'), created_at=data.get('created_at'), book_id=data.get('book_id'))
         db.session.add(new_book_review)
         db.session.commit()
-        return new_book_review.as_dict(), 201
+        return new_book_review.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
 @app.delete('/api/book_reviews/<int:id>')
 def delete_book_review(id):
-    book_review = db.session.get(BookReview, id)
+    book_review = BookReview.query.get(id)
     if not book_review:
         return {"error": "Book review not found"}, 404
     db.session.delete(book_review)
@@ -326,21 +352,21 @@ def get_orders_by_user_id(user_id):
         orders = Order.query.filter(Order.user_id == user_id).all()
         if not orders:
             return {"error": "No orders found for the user"}, 404
-        orders_info = [order.as_dict() for order in orders]
+        orders_info = [order.to_dict() for order in orders]
         return orders_info, 200
     except ValueError:
         return {"error": "User not found"}, 404
 
 @app.route('/api/orders/<int:id>')
 def get_orders_by_id(id):
-    order = Order.query.filter(Order.id == id).first()
+    order = Order.query.get(id)
     if not order:
         return {"error": "Order not found"}
-    return order.as_dict()
+    return order.to_dict()
 
 @app.patch('/api/orders/<int:id>')
 def patch_order(id):
-    order = db.session.get(Order, id)
+    order = Order.query.get(id)
     if not order:
         return {"error": "Order not found"}, 404
     try:
@@ -349,7 +375,7 @@ def patch_order(id):
             setattr(order, attribute, data[attribute])
         db.session.add(order)
         db.session.commit()
-        return order.as_dict(), 202
+        return order.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -364,13 +390,13 @@ def post_order():
             delivery_id=data.get('delivery_id'))
         db.session.add(new_order)
         db.session.commit()
-        return new_order.as_dict(), 201
+        return new_order.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
 @app.delete('/api/orders/<int:id>')
 def delete_order(id):
-    order = db.session.get(Order, id)
+    order = Order.query.get(id)
     if not order:
         return {"error": "Order not found"}, 404
     db.session.delete(order)
@@ -381,18 +407,18 @@ def delete_order(id):
 @app.route('/api/deliveries')
 def get_deliveries():
     deliveries = Delivery.query.all()
-    return [delivery.as_dict() for delivery in deliveries]
+    return [delivery.to_dict() for delivery in deliveries]
 
 @app.route('/api/deliveries/<int:id>')
 def get_delivery_by_id(id):
-    delivery = Delivery.query.filter(Delivery.id == id).first()
+    delivery = Delivery.query.get(id)
     if not delivery:
         return {"error": "Delivery not found"}
-    return delivery.as_dict()
+    return delivery.to_dict()
 
 @app.patch('/api/deliveries/<int:id>')
 def patch_delivery(id):
-    delivery = db.session.get(Delivery, id)
+    delivery = Delivery.query.get(id)
     if not delivery:
         return {"error": "Delivery not found"}, 404
     try:
@@ -401,7 +427,7 @@ def patch_delivery(id):
             setattr(delivery, attribute, data[attribute])
         db.session.add(delivery)
         db.session.commit()
-        return delivery.as_dict(), 202
+        return delivery.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -415,13 +441,13 @@ def post_delivery():
             contact=data.get('contact'))
         db.session.add(new_delivery)
         db.session.commit()
-        return new_delivery.as_dict(), 201
+        return new_delivery.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
 @app.delete('/api/deliveries/<int:id>')
 def delete_delivery(id):
-    delivery = db.session.get(Delivery, id)
+    delivery = Delivery.query.get(id)
     if not delivery:
         return {"error": "Delivery not found"}, 404
     db.session.delete(delivery)
@@ -431,18 +457,20 @@ def delete_delivery(id):
 #OrderDetail Crud
 @app.route('/api/order_details/<int:order_id>')
 def get_order_details_by_order_id(order_id):
-    try:
-        order_details = OrderDetail.query.filter(OrderDetail.order_id == order_id).all()
-        if not order_details:
-            return {"error": "Empty details found for the order"}, 404
-        cart_info = [order_detail.as_dict() for order_detail in order_details]
-        return cart_info, 200
-    except NoResultFound:
+    order = Order.query.get(order_id)
+    if not order:
         return {"error": "Order not found"}, 404
+
+    order_details = OrderDetail.query.filter(OrderDetail.order_id == order_id).all()
+    if not order_details:
+        return {"error": "Empty details found for the order"}, 404
+
+    cart_info = [order_detail.to_dict() for order_detail in order_details]
+    return cart_info, 200
 
 @app.patch('/api/order_details/<int:id>')
 def patch_order_detail(id):
-    order_detail = db.session.get(OrderDetail, id)
+    order_detail = OrderDetail.query.get(id)
     if not order_detail:
         return {"error": "Order detail not found"}, 404
     try:
@@ -451,7 +479,7 @@ def patch_order_detail(id):
             setattr(order_detail, attribute, data[attribute])
         db.session.add(order_detail)
         db.session.commit()
-        return order_detail.as_dict(), 202
+        return order_detail.to_dict(), 202
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
@@ -465,13 +493,13 @@ def post_order_detail():
             quantity=data.get('quantity'))
         db.session.add(new_order_detail)
         db.session.commit()
-        return new_order_detail.as_dict(), 201
+        return new_order_detail.to_dict(), 201
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
 @app.delete('/api/order_details/<int:id>')
 def delete_order_detail(id):
-    order_detail = db.session.get(OrderDetail, id)
+    order_detail = OrderDetail.query.get(id)
     if not order_detail:
         return {"error": "Order detail not found"}, 404
     db.session.delete(order_detail)

@@ -12,14 +12,6 @@ metadata = MetaData()
 # A Flask SQLAlchemy extension
 db = SQLAlchemy(metadata=metadata)
 
-# class SerializerMixin:
-#     @declared_attr
-#     def serialize_rules(cls):
-#         return ["-" + rel.key for rel in cls.__mapper__.relationships] + ["*"]
-
-#     def as_dict(self):
-#         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
 class Book(db.Model, SerializerMixin):
     __tablename__ = 'book_table'
 
@@ -43,10 +35,10 @@ class Book(db.Model, SerializerMixin):
     book_review = db.relationship("BookReview", back_populates="book", cascade="all, delete-orphan")
     order_details = db.relationship("OrderDetail", back_populates="book")
 
-    serialize_rules = ["-likes.user.likes", "-cart_list.user.cart_list", "-book_review.book", "-order_details.book.order_details"]
+    serialize_rules = ["-likes", "-cart_list", "-book_review", "-order_details"]
 
     def __repr__(self):
-        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image}, {self.category_id}>"
+        return f"<Book {self.id}: {self.title}, {self.author}, {self.page_count}, {self.summary}, {self.detail}, {self.table_of_contents}, {self.price}, {self.published_date}, {self.book_image}, {self.category_id}, {self.likes}>"
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'user_table'
@@ -55,7 +47,6 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String(15), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    salt = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
     likes = db.relationship("Like", back_populates="user", cascade="all, delete-orphan")
@@ -65,7 +56,7 @@ class User(db.Model, SerializerMixin):
     serialize_rules = ["-likes", "-cart_list", "-orders", "-password"]
 
     def __repr__(self):
-        return f"<User {self.id}: {self.email}, {self.name}, {self.password}, {self.salt}, {self.created_at}>"
+        return f"<User {self.id}: {self.email}, {self.name}, {self.created_at}>"
     
 class Like(db.Model, SerializerMixin):
     __tablename__ = 'like_table'
@@ -76,10 +67,10 @@ class Like(db.Model, SerializerMixin):
     user = db.relationship("User", back_populates="likes")
     book = db.relationship("Book", back_populates="likes")
 
-    serialize_rules = ["-user.likes", "-book.likes"]
+    serialize_rules = ["-user", "-book"]
 
     def __repr__(self):
-        return f"<Like User {self.id}: {self.user_id}, Book:{self.book_id}>"
+        return f"<Like User: {self.user_id}, Book:{self.book_id}>"
 
     
 class Cart(db.Model, SerializerMixin):
@@ -93,7 +84,7 @@ class Cart(db.Model, SerializerMixin):
     user = db.relationship("User", back_populates="cart_list")
     book = db.relationship("Book", back_populates="cart_list")
 
-    serialize_rules = ["-user.cart_table", "-book.cart_table"]
+    serialize_rules = ["-user", "-book"]
 
     def __repr__(self):
         return f"<Cart {self.id}: {self.quantity}, {self.user_id}, {self.book_id}>"
@@ -115,6 +106,11 @@ class BookReview(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Book Review {self.id}: {self.rating}, {self.reviewer}, {self.comment}, {self.created_at}, {self.book_id}>"
 
+    @staticmethod
+    def validate_data(data):
+        if not data.get('reviewer') or not data.get('comment') or not data.get('book_id'):
+            raise ValueError("Invalid data")
+
 
 class Category(db.Model, SerializerMixin):
     __tablename__ = 'category_table'
@@ -125,6 +121,7 @@ class Category(db.Model, SerializerMixin):
     book = db.relationship("Book", back_populates="category")
 
     serialize_rules = ["-book"]
+    # serialize_rules = ["*"]
 
     def __repr__(self):
         return f"<Category {self.id}: {self.name}>"
@@ -142,7 +139,8 @@ class Order(db.Model, SerializerMixin):
     delivery = db.relationship("Delivery", back_populates="orders")
     order_details = db.relationship("OrderDetail", back_populates="order")
 
-    serialize_rules = ["-user", '-delivery','-order_details']
+    serialize_rules = ["-user", "-delivery", "-order_details"]
+    # serialize_rules = ["*"]
 
     def __repr__(self):
         return f"<Order {self.id}: {self.total_price}, {self.ordered_at}, {self.user_id}, {self.delivery_id}>"
@@ -157,7 +155,8 @@ class Delivery(db.Model, SerializerMixin):
 
     orders = db.relationship("Order", back_populates="delivery", cascade="all, delete-orphan")
 
-    serialize_rules = ["-order"]
+    serialize_rules = ["-orders"]
+    # serialize_rules = ["*"]
 
     def __repr__(self):
         return f"<Delivery {self.id}: {self.address}, {self.recipient}, {self.contact}>"
@@ -172,9 +171,9 @@ class OrderDetail(db.Model, SerializerMixin):
     order = db.relationship("Order", back_populates="order_details")
     book = db.relationship("Book", back_populates="order_details")
 
-    serialize_rules = ["-order.order_details", "-book.order_details"]
+    serialize_rules = ["-order", "-book"]
     
 
     def __repr__(self):
-        return f"<Order Detail {self.id}: {self.order_id}, {self.book_id}, {self.quantity}>"
+        return f"<Order Detail Order: {self.order_id}, Book: {self.book_id}, Quantity: {self.quantity}>"
 

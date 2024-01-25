@@ -7,7 +7,7 @@ function BookCard( {book} ) {
     return (
         <div className="book-card">
             <Link to={`/book/${book.id}`}>
-                <img className="book-image" src={book.image} alt={book.title}></img>
+                <img className="book-image" src={book.book_image} alt={book.title}></img>
             </Link>
             <p>Title: {book.title}</p>
             <p>Author: {book.author}</p>
