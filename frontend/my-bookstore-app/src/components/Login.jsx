@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Outlet, useOutletContext } from "react-router-dom";
 
-function Login({attemptLogin}) {
+function Login() {
 
   // STATE //
+  const {attemptLogin} = useOutletContext()
 
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')

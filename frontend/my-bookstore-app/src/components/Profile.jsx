@@ -7,7 +7,9 @@ function Profile() {
     return(
         <>
             <h1>Profile</h1>
-            <button onClick={logout}>Logout</button>
+            <a href="/" >
+                <button onClick={logout}>Logout</button>
+            </a>
         </>
     )
 }

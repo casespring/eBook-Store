@@ -21,13 +21,27 @@ function NavBar( {user} ) {
             {/* profile and cart */}
             
             <ul className="profilecart">
-                <li>
-                {/* <NavLink to="/profile" > */}
-                <a href="/profile">
+                {/* <li>
+                {user ? <a href="/profile"> : <a href="/login">}
                     {user ? <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img> : <h1>Sign In</h1>}
-                    {/* // <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img> */}
                 </a>
-                {/* </NavLink> */}
+                </li>
+
+                <li>
+                <a href="/cart">
+                    <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="cart"></img>
+                </a>
+                </li> */}
+                <li>
+                    {user ? (
+                        <a href="/profile">
+                            <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile" />
+                        </a>
+                    ) : (
+                    <a href="/login">
+                        <h1>Sign In</h1>
+                    </a>
+                    )}
                 </li>
                 <li>
                 <a href="/cart">

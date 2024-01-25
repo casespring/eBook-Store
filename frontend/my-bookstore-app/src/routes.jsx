@@ -5,6 +5,7 @@ import Cart from "./components/Cart"
 import Home from "./components/Home"
 import BookDetails from "./components/BookDetails"
 import Checkout from "./components/Checkout"
+import Login from "./components/Login"
 
 const routes = [
     {
@@ -34,6 +35,10 @@ const routes = [
             {
                 path: "/checkout",
                 element: <Checkout />
+            },
+            {
+                path: "login",
+                element: <Login />
             }
         ]
 }
