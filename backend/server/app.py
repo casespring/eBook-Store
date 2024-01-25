@@ -95,7 +95,10 @@ def get_book_by_id(id):
         return {"error": "Book not found"}
     return book.to_dict()
 
-
+@app.delete('/api/logout')
+def logout():
+    session.pop('user_id')
+    return { "message": "Logged out"}, 200
 
 @app.patch('/api/books/<int:id>')
 def patch_book(id):

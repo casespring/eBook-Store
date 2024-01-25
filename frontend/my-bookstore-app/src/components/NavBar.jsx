@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./NavBar.css";
 
-function NavBar() {
+function NavBar( {user} ) {
     const navigate = useNavigate();
 
     return (
@@ -24,7 +24,8 @@ function NavBar() {
                 <li>
                 {/* <NavLink to="/profile" > */}
                 <a href="/profile">
-                    <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img>
+                    {user ? <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img> : <h1>Sign In</h1>}
+                    {/* // <img className="profilecart-image" src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png" alt="profile"></img> */}
                 </a>
                 {/* </NavLink> */}
                 </li>
