@@ -39,7 +39,7 @@ function App() {
 }
 
 function logout() {
-  fetch(`api/logout`, { method: "DELETE" }).then((res) => {
+  fetch(`/api/logout`, { method: "DELETE" }).then((res) => {
       if (res.ok) {
           setUser(null);
       }
@@ -53,10 +53,14 @@ function logout() {
         {user ? 
                   <div>
                     <h1>Hello {user.name}</h1>
-                  <Outlet context={{ cartPrice, setCartPrice, logout }}/>
+                  <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
                 </div>:
-                <Login attemptLogin={attemptLogin} />
+                <div>
+                {/* <h1>Hello {user.name}</h1> */}
+              <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
+            </div>
                 }
+        {/* <Outlet context={{ cartPrice, setCartPrice, logout }}/> */}
         
 
       </header>
