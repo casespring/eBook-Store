@@ -38,14 +38,22 @@ function App() {
         .catch((e) => console.log(e));
 }
 
+function logout() {
+  fetch(`api/logout`, { method: "DELETE" }).then((res) => {
+      if (res.ok) {
+          setUser(null);
+      }
+  });
+}
+
   return (
     <>
       <header className = "header">
-        <NavBar />
+        <NavBar user={user}/>
         {user ? 
                   <div>
                     <h1>Hello {user.name}</h1>
-                  <Outlet context={{ cartPrice, setCartPrice }}/>
+                  <Outlet context={{ cartPrice, setCartPrice, logout }}/>
                 </div>:
                 <Login attemptLogin={attemptLogin} />
                 }
