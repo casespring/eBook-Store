@@ -50,38 +50,11 @@ def login():
     else:
         return { "error": "Invalid username or password" }, 401
 
-
 #Books Crud
 @app.route('/api/books')
 def get_books():
     books = Book.query.all()
     return [book.to_dict() for book in books]
-
-
-# # CHECK SESSION
-# @app.get('/api/check_session')
-# def check_session():
-#     user = db.session.get(User, session.get('user_id'))
-#     print(f'check session {session.get("user_id")}')
-#     if user:
-#         return user.to_dict(rules=['-password']), 200
-#     else:
-#         return {"message": "No user logged in"}, 401
-
-# # LOGIN
-# @app.post('/api/login')
-# def login():
-#     print("in login")
-#     data = request.json
-
-#     user = User.query.filter(User.name == data.get('name')).first()
-
-#     if user and bcrypt.check_password_hash(user.password, data.get('password')):
-#         session["user_id"] = user.id
-#         print("success")
-#         return user.to_dict(rules=['-password']), 200
-#     else:
-#         return { "error": "Invalid username or password" }, 401
 
 @app.route('/api/books/<int:id>')
 def get_book_by_id(id):

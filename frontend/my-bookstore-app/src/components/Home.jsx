@@ -15,7 +15,7 @@ function Home() {
             .then((r) => r.json())
             .then((data) => {
                 console.log(data)
-                const bestSellersData = data.filter((book) => book.likes);
+                const bestSellersData = [...data].sort((a, b) => (b.likes ? b.likes.length : 0) - (a.likes ? a.likes.length : 0));
                 const newArrivalsData = data.slice().sort((a, b) => b.id - a.id); // Sort by ID in descending order
                 setBestSellers(bestSellersData);
                 setNewArrivals(newArrivalsData);
@@ -37,7 +37,7 @@ function Home() {
         <>
             <div>
                 <h1 className="header-styles">Bestsellers </h1>
-                <div className="card-container">{renderBooks(newArrivals)}</div>
+                <div className="card-container">{renderBooks(bestSellers)}</div>
             </div>
             <div>
                 <h1 className="header-styles">New Arrivals </h1>

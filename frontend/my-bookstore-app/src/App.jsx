@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from 'react'
+import UserContext from './components/UserContext.jsx';
 import { Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import "./App.css";
@@ -47,24 +49,22 @@ function logout() {
 }
 
   return (
-    <>
+    <UserContext.Provider value={{ user, setUser, logout }}>
       <header className = "header">
         <NavBar user={user}/>
         {user ? 
-                  <div>
-                    <h1>Hello {user.name}</h1>
-                  <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
-                </div>:
-                <div>
-                {/* <h1>Hello {user.name}</h1> */}
-              <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
-            </div>
-                }
+          <div>
+            <h1>Hello {user.name}</h1>
+            <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
+          </div>:
+          <div>
+            {/* <h1>Hello {user.name}</h1> */}
+            <Outlet context={{ cartPrice, setCartPrice, logout, attemptLogin }}/>
+          </div>
+        }
         {/* <Outlet context={{ cartPrice, setCartPrice, logout }}/> */}
-        
-
       </header>
-    </>
+    </UserContext.Provider>
   )
 }
 
