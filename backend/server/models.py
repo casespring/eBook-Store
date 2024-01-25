@@ -62,7 +62,7 @@ class User(db.Model, SerializerMixin):
     cart_list = db.relationship("Cart", back_populates="user", cascade="all, delete-orphan")
     orders = db.relationship("Order", back_populates="user", cascade="all, delete-orphan")
 
-    serialize_rules = ["-likes", "-cart_list", "-orders"]
+    serialize_rules = ["-likes", "-cart_list", "-orders", "-password"]
 
     def __repr__(self):
         return f"<User {self.id}: {self.email}, {self.name}, {self.password}, {self.salt}, {self.created_at}>"

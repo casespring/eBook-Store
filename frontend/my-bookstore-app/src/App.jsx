@@ -6,12 +6,21 @@ import Login from "./components/Login"
 
 function App() {
 
+  const [user, setUser] = useState(null);
   const [cartPrice, setCartPrice] = useState(0.00);
+
+  useEffect(() => {
+    fetch(`api/check_session`).then((res) => {
+        if (res.ok) {
+            res.json().then((user) => setUser(user));
+        }
+    });
+}, []);
 
   // AUTHENTICATION //
 
   function attemptLogin(userInfo) {
-    fetch(`/login`, {
+    fetch(`api/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -33,10 +42,15 @@ function App() {
     <>
       <header className = "header">
         <NavBar />
-        <Login attemptLogin={attemptLogin} />
-          <div>
-            <Outlet context={{ cartPrice, setCartPrice }}/>
-          </div>
+        {user ? 
+                  <div>
+                    <h1>Hello {user.name}</h1>
+                  <Outlet context={{ cartPrice, setCartPrice }}/>
+                </div>:
+                <Login attemptLogin={attemptLogin} />
+                }
+        
+
       </header>
     </>
   )

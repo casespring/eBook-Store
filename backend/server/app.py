@@ -22,12 +22,12 @@ bcrypt = Bcrypt(app)
 
 
 
-@app.route('/')
+@app.route('/api')
 def home():
     return '<h1>Welcome to the eBook Store Database</h1>'
 
 #Books Crud
-@app.route('/books')
+@app.route('/api/books')
 def get_books():
     books = Book.query.all()
     return [book.as_dict() for book in books]
@@ -37,7 +37,7 @@ def get_books():
 
 
 # CHECK SESSION
-@app.get('/check_session')
+@app.get('/api/check_session')
 def check_session():
     user = db.session.get(User, session.get('user_id'))
     print(f'check session {session.get("user_id")}')
@@ -47,8 +47,9 @@ def check_session():
         return {"message": "No user logged in"}, 401
 
 # LOGIN
-@app.post('/login')
+@app.post('/api/login')
 def login():
+    print("in login")
     data = request.json
 
     user = User.query.filter(User.name == data.get('name')).first()
@@ -64,7 +65,7 @@ def login():
 ####################################   VALIDATION ##########################################
 
 
-@app.route('/books/<int:id>')
+@app.route('/api/books/<int:id>')
 def get_book_by_id(id):
     book = Book.query.filter(Book.id == id).first()
     if not book:
@@ -73,7 +74,7 @@ def get_book_by_id(id):
 
 
 
-@app.patch('/books/<int:id>')
+@app.patch('/api/books/<int:id>')
 def patch_book(id):
     book = db.session.get(Book, id)
     if not book:
@@ -88,7 +89,7 @@ def patch_book(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.post('/books')
+@app.post('/api/books')
 def post_book():
     try:
         data = request.json
@@ -110,7 +111,7 @@ def post_book():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.delete('/books/<int:id>')
+@app.delete('/api/books/<int:id>')
 def delete_book(id):
     book = db.session.get(Book, id)
     if not book:
@@ -120,19 +121,19 @@ def delete_book(id):
     return {}, 204
 
 #Users Crud
-@app.route('/users')
+@app.route('/api/users')
 def get_users():
     users = User.query.all()
     return [user.as_dict() for user in users]
 
-@app.route('/users/<int:id>')
+@app.route('/api/users/<int:id>')
 def get_users_by_id(id):
     user = User.query.filter(User.id == id).first()
     if not user:
         return {"error": "User not found"}
     return user.as_dict()
 
-@app.patch('/users/<int:id>')
+@app.patch('/api/users/<int:id>')
 def patch_user(id):
     user = db.session.get(User, id)
     if not user:
@@ -150,7 +151,7 @@ def patch_user(id):
 #when you need to check if a provided password matches the stored hash: 
     # check_password_hash(stored_hashed_password, provided_password)
 
-@app.post('/users')
+@app.post('/api/users')
 def post_user():
     try:
         data = request.json  
@@ -168,7 +169,7 @@ def post_user():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.delete('/users/<int:id>')
+@app.delete('/api/users/<int:id>')
 def delete_user(id):
     user = db.session.get(User, id)
     if not user:
@@ -178,12 +179,12 @@ def delete_user(id):
     return {}, 204
 
 #Likes Crud
-@app.route('/likes', methods=['GET'])
+@app.route('/api/likes', methods=['GET'])
 def get_likes():
     likes = Like.query.all()
     return [like.as_dict() for like in likes]
 
-@app.post('/likes')
+@app.post('/api/likes')
 def post_like():
     try:
         data = request.json
@@ -194,7 +195,7 @@ def post_like():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.delete('/likes/<int:id>')
+@app.delete('/api/likes/<int:id>')
 def delete_like(id):
     like = db.session.get(Like, id)
     if not like:
@@ -204,7 +205,7 @@ def delete_like(id):
     return {}, 204
 
 #Carts Crud
-@app.route('/carts/<int:user_id>')
+@app.route('/api/carts/<int:user_id>')
 def get_carts_by_user_id(user_id):
     try:
         carts = Cart.query.filter(Cart.user_id == user_id).all()
@@ -215,7 +216,7 @@ def get_carts_by_user_id(user_id):
     except ValueError:
         return {"error": "User not found"}, 404
 
-@app.patch('/carts/<int:id>')
+@app.patch('/api/carts/<int:id>')
 def patch_cart(id):
     cart = db.session.get(Cart, id)
     if not cart:
@@ -230,7 +231,7 @@ def patch_cart(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.post('/carts')
+@app.post('/api/carts')
 def post_cart():
     try:
         data = request.json
@@ -265,7 +266,7 @@ def post_cart():
 #     except ValueError:
 #         return make_response({"errors": ["Validation errors"]}, 400)
 
-@app.delete('/carts/<int:id>')
+@app.delete('/api/carts/<int:id>')
 def delete_cart(id):
     cart = db.session.get(Cart, id)
     if not cart:
@@ -275,7 +276,7 @@ def delete_cart(id):
     return {}, 204
 
 #BookReview Crud
-@app.route('/book_reviews/<int:book_id>')
+@app.route('/api/book_reviews/<int:book_id>')
 def get_book_reviews_by_book_id(book_id):
     book = Book.query.get(book_id)
     if not book:
@@ -283,7 +284,7 @@ def get_book_reviews_by_book_id(book_id):
     book_reviews = [review.as_dict() for review in book.book_review]
     return book_reviews, 200
 
-@app.patch('/book_reviews/<int:id>')
+@app.patch('/api/book_reviews/<int:id>')
 def patch_book_review(id):
     book_review = db.session.get(BookReview, id)
     if not book_review:
@@ -298,7 +299,7 @@ def patch_book_review(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.post('/book_reviews')
+@app.post('/api/book_reviews')
 def post_book_review():
     try:
         data = request.json
@@ -309,7 +310,7 @@ def post_book_review():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
 
-@app.delete('/book_reviews/<int:id>')
+@app.delete('/api/book_reviews/<int:id>')
 def delete_book_review(id):
     book_review = db.session.get(BookReview, id)
     if not book_review:
@@ -319,7 +320,7 @@ def delete_book_review(id):
     return {}, 204
 
 #Orders Crud
-@app.route('/orders/<int:user_id>')
+@app.route('/api/orders/<int:user_id>')
 def get_orders_by_user_id(user_id):
     try:
         orders = Order.query.filter(Order.user_id == user_id).all()
@@ -330,14 +331,14 @@ def get_orders_by_user_id(user_id):
     except ValueError:
         return {"error": "User not found"}, 404
 
-@app.route('/orders/<int:id>')
+@app.route('/api/orders/<int:id>')
 def get_orders_by_id(id):
     order = Order.query.filter(Order.id == id).first()
     if not order:
         return {"error": "Order not found"}
     return order.as_dict()
 
-@app.patch('/orders/<int:id>')
+@app.patch('/api/orders/<int:id>')
 def patch_order(id):
     order = db.session.get(Order, id)
     if not order:
@@ -352,7 +353,7 @@ def patch_order(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.post('/orders')
+@app.post('/api/orders')
 def post_order():
     try:
         data = request.json
@@ -367,7 +368,7 @@ def post_order():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.delete('/orders/<int:id>')
+@app.delete('/api/orders/<int:id>')
 def delete_order(id):
     order = db.session.get(Order, id)
     if not order:
@@ -377,19 +378,19 @@ def delete_order(id):
     return {}, 204    
 
 #Delivery Crud
-@app.route('/deliveries')
+@app.route('/api/deliveries')
 def get_deliveries():
     deliveries = Delivery.query.all()
     return [delivery.as_dict() for delivery in deliveries]
 
-@app.route('/deliveries/<int:id>')
+@app.route('/api/deliveries/<int:id>')
 def get_delivery_by_id(id):
     delivery = Delivery.query.filter(Delivery.id == id).first()
     if not delivery:
         return {"error": "Delivery not found"}
     return delivery.as_dict()
 
-@app.patch('/deliveries/<int:id>')
+@app.patch('/api/deliveries/<int:id>')
 def patch_delivery(id):
     delivery = db.session.get(Delivery, id)
     if not delivery:
@@ -404,7 +405,7 @@ def patch_delivery(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.post('/deliveries')
+@app.post('/api/deliveries')
 def post_delivery():
     try:
         data = request.json
@@ -418,7 +419,7 @@ def post_delivery():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.delete('/deliveries/<int:id>')
+@app.delete('/api/deliveries/<int:id>')
 def delete_delivery(id):
     delivery = db.session.get(Delivery, id)
     if not delivery:
@@ -428,7 +429,7 @@ def delete_delivery(id):
     return {}, 204    
 
 #OrderDetail Crud
-@app.route('/order_details/<int:order_id>')
+@app.route('/api/order_details/<int:order_id>')
 def get_order_details_by_order_id(order_id):
     try:
         order_details = OrderDetail.query.filter(OrderDetail.order_id == order_id).all()
@@ -439,7 +440,7 @@ def get_order_details_by_order_id(order_id):
     except NoResultFound:
         return {"error": "Order not found"}, 404
 
-@app.patch('/order_details/<int:id>')
+@app.patch('/api/order_details/<int:id>')
 def patch_order_detail(id):
     order_detail = db.session.get(OrderDetail, id)
     if not order_detail:
@@ -454,7 +455,7 @@ def patch_order_detail(id):
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.post('/order_details')
+@app.post('/api/order_details')
 def post_order_detail():
     try:
         data = request.json
@@ -468,7 +469,7 @@ def post_order_detail():
     except ValueError:
         return make_response({"errors": ["validation errors"]}, 400)
     
-@app.delete('/order_details/<int:id>')
+@app.delete('/api/order_details/<int:id>')
 def delete_order_detail(id):
     order_detail = db.session.get(OrderDetail, id)
     if not order_detail:
