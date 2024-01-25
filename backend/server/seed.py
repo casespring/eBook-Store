@@ -6,7 +6,7 @@ from datetime import datetime
 import random
 from faker import Faker
 from sqlalchemy.sql import func 
-
+from flask_bcrypt import Bcrypt
 # regular seed.py
 # if __name__ == "__main__":
 #     with app.app_context():
@@ -132,14 +132,14 @@ def seed_books(num_books=5):
     db.session.add_all(book_list)
     db.session.commit()
 
-def seed_users(num_users=5):
+def seed_users(bcrypt, num_users=5):
     user_list = []
 
-    for _ in range(num_users):
+    for i in range(num_users):
         user = User(
             email=fake.email(),
-            name=fake.user_name(),
-            password=fake.password(),
+            name=str(i),
+            password=bcrypt.generate_password_hash(str(i)),
         )
         user_list.append(user)
 
@@ -253,7 +253,7 @@ def seed_order_details():
 
 if __name__ == "__main__":
     with app.app_context():
-
+        bcrypt = Bcrypt(app)
         Book.query.delete()
         Category.query.delete()
         User.query.delete()
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 
         seed_categories()
         seed_books()
-        seed_users()
+        seed_users(bcrypt)
         seed_likes()
         seed_carts()
         seed_reviews()
