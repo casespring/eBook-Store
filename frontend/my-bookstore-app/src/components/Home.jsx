@@ -11,7 +11,7 @@ function Home() {
     // navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5555/books')
+        fetch('http://127.0.0.1:5555/api/books')
             .then((r) => r.json())
             .then((data) => {
                 console.log(data)
@@ -23,7 +23,7 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5555/book_reviews')
+        fetch('http://127.0.0.1:5555/api/book_reviews')
             .then((r) => r.json())
             .then((data) => {
                 setReviews(data);

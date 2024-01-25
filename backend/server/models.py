@@ -69,6 +69,9 @@ class Like(db.Model, SerializerMixin):
 
     serialize_rules = ["-user", "-book"]
 
+    def __hash__(self):
+        return hash((self.user_id, self.book_id))
+
     def __repr__(self):
         return f"<Like User: {self.user_id}, Book:{self.book_id}>"
 
