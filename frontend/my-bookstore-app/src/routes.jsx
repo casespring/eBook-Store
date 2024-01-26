@@ -37,7 +37,7 @@ const routes = [
                 element: <Checkout />
             },
             {
-                path: "login",
+                path: "/login",
                 element: <Login />
             }
         ]

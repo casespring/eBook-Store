@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import UserContext from './UserContext.jsx';
 import { useNavigate } from 'react-router-dom';  
 import { useOutletContext } from "react-router-dom";
+import "./Login.css";
 
 function Login() {
   // STATE //
-  const { attemptLogin } = useOutletContext();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const { attemptLogin } = useContext(UserContext);
 
   // HOOKS //
   const navigate = useNavigate();  
@@ -14,16 +16,14 @@ function Login() {
   const handleChangeUsername = e => setName(e.target.value);
   const handleChangePassword = e => setPassword(e.target.value);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    attemptLogin({ "name": name, "password": password });
-
-    const loginSuccessful = true;
-
+    const loginSuccessful = await attemptLogin({ "name": name, "password": password });
+  
     if (loginSuccessful) {
       navigate('/');
     }
-
+  
     console.log('log');
   }
 
@@ -38,7 +38,7 @@ function Login() {
         placeholder='name'
       />
       <input
-        type="text"
+        type="password" // Changed from 'text' to 'password' to hide the input
         onChange={handleChangePassword}
         value={password}
         placeholder='password'

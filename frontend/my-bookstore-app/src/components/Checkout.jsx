@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import UserContext from './UserContext.jsx';
+import "./Checkout.css"
 
 function Checkout() {
 
@@ -44,12 +46,14 @@ function Checkout() {
         .then(data => {
             // Handle success response if needed
             console.log("Order submitted successfully:", data);
+            window.alert("Your order has been placed!");
         })
         .catch(error => {
             // Handle error if needed
             console.error("Error submitting order:", error);
         });
     };
+
 
 
     return (
@@ -121,12 +125,18 @@ function Checkout() {
                 <input type="text" id="zipcode" name="zipcode" value={formData.zipcode} onChange={handleChange}/><br />
                 <label htmlFor="phonenumber">Phone Number:</label><br />
                 <input type="text" id="phonenumber" name="phonenumber" value={formData.phonenumber} onChange={handleChange}/><br />
+                <label htmlFor="cardName">Card Holder Name:</label><br />
+                <input type="text" id="cardName" name="cardName" value={formData.cardName} onChange={handleChange}/><br />
+                <label htmlFor="cardNumber">Card Number:</label><br />
+                <input type="text" id="cardNumber" name="cardNumber" value={formData.cardNumber} onChange={handleChange}/><br />
+                <label htmlFor="cardExpiry">Expiry Date:</label><br />
+                <input type="text" id="cardExpiry" name="cardExpiry" value={formData.cardExpiry} onChange={handleChange}/><br />
+                <label htmlFor="cardCVV">CVV:</label><br />
+                <input type="text" id="cardCVV" name="cardCVV" value={formData.cardCVV} onChange={handleChange}/><br />
                 <div>
                     <h1>Order Summary</h1>
                     <p>{cartTotal}</p>
                 </div>
-
-
                 <input type="submit" value="Submit" />
             </form>
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import CartCard from './CartCard'
 import { useParams } from "react-router-dom";
 import { Outlet, useOutletContext } from "react-router-dom";
+import UserContext from './UserContext.jsx';
+import "./Cart.css"
 
 function Cart() {
 

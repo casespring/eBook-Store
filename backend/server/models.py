@@ -24,7 +24,7 @@ class Book(db.Model, SerializerMixin):
     detail = db.Column(db.Text)
     table_of_contents = db.Column(db.Text)
     price = db.Column(db.Integer)
-    published_date = db.Column(db.Date, nullable=True)
+    published_date = db.Column(db.Integer)
     book_image = db.Column(db.String)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category_table.id'))
@@ -47,6 +47,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String(15), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
+    user_image = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
     likes = db.relationship("Like", back_populates="user", cascade="all, delete-orphan")

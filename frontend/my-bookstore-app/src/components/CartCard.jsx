@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+import UserContext from './UserContext.jsx';
+import "./CartCard.css"
 
 function CartCard( {item} ) {
     const { id } = useParams();
@@ -12,12 +14,12 @@ function CartCard( {item} ) {
     }
 
     return(
-        <div>
+        <div className="cart-card" >
             <img src={item.image}></img>
             <p>{item.title}</p>
             <p>By: {item.author}</p>
             <p>${item.price}</p>
-            <button onClick={handleClick}>x</button>
+            <button onClick={handleClick}>remove from cart</button>
         </div>
     )
 }

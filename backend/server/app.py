@@ -154,6 +154,7 @@ def post_user():
             email=data.get('email'),
             name=data.get('name'),
             password=hashed_password,
+            user_image=data.get('user_image'),
             created_at=data.get('created_at')
         )
         db.session.add(new_user)
