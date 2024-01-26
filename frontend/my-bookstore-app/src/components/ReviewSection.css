@@ -6,7 +6,7 @@
 } */
 
 .reviews {
-    border: 1px solid #e5e5e5;
+    border: 1px solid #E91E63;
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-gap: 1em;
@@ -14,6 +14,14 @@
     max-width: 900px;
     padding: 20px;
     margin-top: 15px;
+}
+
+.tiny-book-image {
+    width: 43px;
+    height: 59px;
+    border: solid rgb(239, 17, 17) 2px;
+    margin: 0.3em;
+    cursor: pointer;
 }
 
 .reviews p {

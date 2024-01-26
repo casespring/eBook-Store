@@ -1,0 +1,29 @@
+.search {
+    flex: 1 1 auto;
+    margin: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+  /* .searchbar {
+    width: 189%;
+    font-size: 1rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    border: 3px solid #607D8B;
+    border-radius: 11px;
+    padding-left: 0.5rem;
+    box-shadow: 0 5px 5px #0000001a;
+  } */
+
+  .searchbar {
+    width: 116%;
+    font-size: 1rem;
+    height: 2rem;
+    margin-right: 1vw;
+    border: 0.2em solid #607D8B;
+    border-radius: 1.5vw;
+    padding-left: 1vw;
+    box-shadow: 0 0.5vw 0.5vw rgba(0, 0, 0, 0.1);
+}
