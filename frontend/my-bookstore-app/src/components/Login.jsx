@@ -10,6 +10,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const { attemptLogin } = useContext(UserContext);
 
+
   // HOOKS //
   const navigate = useNavigate();  
   // EVENTS //

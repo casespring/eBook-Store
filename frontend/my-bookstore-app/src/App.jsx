@@ -1,16 +1,20 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import UserContext from './components/UserContext.jsx';
 import { Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Profile from './components/Profile.jsx';
 import "./App.css";
 import Login from "./components/Login"
+// import UserContext from './UserContext.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
   const [cartPrice, setCartPrice] = useState(0.00);
   const [searchTerm, setSearchTerm] = useState(''); // add searchTerm state here
+
+  // const { setUser } = useContext(UserContext);
+
 
   useEffect(() => {
     fetch(`api/check_session`).then((res) => {
@@ -24,7 +28,7 @@ function App() {
 
   async function attemptLogin(userInfo) {
     try {
-      const response = await fetch(`http://127.0.0.1:5555/api/login`, {
+      const response = await fetch(`/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

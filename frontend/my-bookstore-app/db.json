@@ -66,29 +66,25 @@
   "order": [],
   "cart": [
     {
-      "image": "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg",
-      "title": "Alice in Wonderland",
-      "author": "Lewis Carroll",
-      "price": 12.99,
+      "image": "https://covers3.booksamillion.com/covers/bam/1/97/471/926/197471926X.jpg?_gl=1*1n5jp0i*_ga*MTI0NjQ0MDI1OC4xNzA1NDIwOTU5*_ga_49VMH3SVSG*MTcwNjIzMzIwNy4xNC4xLjE3MDYyMzc4MzMuMzguMC4w",
+      "title": "Undead Unluck, Vol. 1",
+      "author": "Yoshifumi Tozuka",
+      "price": 9.99,
       "state": true,
       "id": "1"
     },
     {
-      "image": "https://prodimage.images-bn.com/pimages/9781946260130_p0_v2_s192x300.jpg",
-      "title": "Alice in Wonderland",
-      "author": "Lewis Carroll",
-      "price": 12.99,
+      "image": "https://m.media-amazon.com/images/I/81a7O+gbBAL._SL1500_.jpg",
+      "title": "Zom 100: Bucket List of the Dead, Vol. 1",
+      "author": "Haro Aso",
+      "price": 11.69,
       "state": true,
       "id": "2"
-    },
-    {
-      "id": "e1cb",
-      "state": true
     }
   ],
   "cart_total": [
     {
-      "total": 0,
+      "total": "$21.68",
       "id": "1"
     }
   ],
@@ -224,6 +220,51 @@
       "zipcode": "",
       "phonenumber": "",
       "cartTotal": 0
+    },
+    {
+      "id": "1958",
+      "fname": "",
+      "lname": "",
+      "streetname": "",
+      "city": "",
+      "state": "",
+      "zipcode": "",
+      "phonenumber": "",
+      "cartTotal": "$21.68"
+    },
+    {
+      "id": "bab7",
+      "fname": "",
+      "lname": "",
+      "streetname": "",
+      "city": "",
+      "state": "",
+      "zipcode": "",
+      "phonenumber": "",
+      "cartTotal": 8.5
+    },
+    {
+      "id": "d1d8",
+      "fname": "Kenlw",
+      "lname": "kekek",
+      "streetname": "",
+      "city": "",
+      "state": "",
+      "zipcode": "",
+      "phonenumber": "",
+      "cartTotal": "$21.68"
+    },
+    {
+      "id": "f24d",
+      "fname": "Marco",
+      "lname": "Upia",
+      "streetname": "473w 145st apt10",
+      "city": "NEW YORK",
+      "state": "NY",
+      "zipcode": "10031",
+      "phonenumber": "9179438861",
+      "cardName": "Marco",
+      "cartTotal": "$21.68"
     }
   ]
 }

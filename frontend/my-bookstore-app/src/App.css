@@ -3,6 +3,11 @@ body {
   overflow: hidden;
 }
 
+h1 {
+  text-align: center;
+  color: #f00;
+}
+
 nav {
   background: linear-gradient(to right, #f70404, #ff4548);
   top: 0;

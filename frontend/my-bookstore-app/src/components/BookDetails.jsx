@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReviewSection  from "./ReviewSection";
 import { Outlet, useOutletContext } from "react-router-dom";
+import "./BookDetails.css"
 
 function BookDetails() {
     const [books, setBooks] = useState([]);
@@ -44,22 +45,22 @@ function BookDetails() {
                 state: true
             })
     })
-        fetch("http://localhost:3000/cart_total/1", {
-            method: "PATCH",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                total: cartPrice
-            })
-        });
+        // fetch("http://localhost:3000/cart_total/1", {
+        //     method: "PATCH",
+        //     headers: {
+        //         Accept: "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         total: cartPrice
+        //     })
+        // });
     }
     
     return (
         <>
         <div className="book-container">
-            <img src={books.image}></img>
+            <img src={books.book_image}></img>
             <div className="book-info">
                 <p>Title: {books.title}</p>
                 <p>Author: {books.author}</p>
@@ -73,8 +74,10 @@ function BookDetails() {
             <p>{books.summary}</p>
         </div>
 
-        <h1>Reviews</h1>
-        {renderReviews}
+        <div className="review-container">
+            <h1>Reviews</h1>
+            {renderReviews}
+        </div>
         </>
     )
 }

@@ -11,9 +11,7 @@ function Profile() {
     useEffect(() => {
         if (!user) {
             navigate('/login');
-        } else {
-            navigate('/profile')
-        }
+        } else {navigate('/profile')}
     }, [user, navigate]);
 
     if (!user) {
