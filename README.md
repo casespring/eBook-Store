@@ -1,5 +1,5 @@
 # eBook-Store
-#Workingtitle (Hugo's & Farms)
+# Workingtitle (Hugo's & Farms)
 
 Welcome to the eBookstore project! This application is designed to help manage the inventory of a virtual bookstore, allowing users to view/purchase and Admins to perform various operations related to book management.
 
